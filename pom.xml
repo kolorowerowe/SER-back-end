@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.github</groupId>
-	<artifactId>ser</artifactId>
+	<artifactId>ser-back-end</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ser</name>
+	<name>ser-back-end</name>
 	<description>System for Sponsors and Exhibitors Registration for the Job Fair.</description>
 
 	<properties>
