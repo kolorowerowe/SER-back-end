@@ -35,6 +35,8 @@ public class User {
 
     private LocalDateTime lastSeen;
 
+    private Boolean isEnabled;
+
     private Boolean shouldChangePassword;
 
     @NonNull

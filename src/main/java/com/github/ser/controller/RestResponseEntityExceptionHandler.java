@@ -2,6 +2,7 @@ package com.github.ser.controller;
 
 import com.github.ser.exception.InvalidPasswordException;
 import com.github.ser.exception.NoUserForEmailException;
+import com.github.ser.exception.SerAuthException;
 import com.github.ser.exception.SerRuntimeException;
 import com.github.ser.model.response.ErrorResponse;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,21 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = {InvalidPasswordException.class, NoUserForEmailException.class})
     protected ResponseEntity<Object> handleConflict(SerRuntimeException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .errorCode(ex.getErrorCode())
+                .message(ex.getMessage())
+                .build();
+
+        return handleExceptionInternal(ex,
+                errorResponse,
+                new HttpHeaders(),
+                HttpStatus.UNAUTHORIZED,
+                request);
+    }
+
+    @ExceptionHandler(value = SerAuthException.class)
+    protected ResponseEntity<Object> handleConflict(SerAuthException ex, WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorCode(ex.getErrorCode())

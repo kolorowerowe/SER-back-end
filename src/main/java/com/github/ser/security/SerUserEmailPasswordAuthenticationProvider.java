@@ -1,5 +1,8 @@
 package com.github.ser.security;
 
+import com.github.ser.exception.InactiveUserException;
+import com.github.ser.exception.PasswordMissingException;
+import com.github.ser.exception.UsernameMissingException;
 import com.github.ser.model.database.User;
 import com.github.ser.service.UserService;
 import com.github.ser.util.JwtTokenUtil;
@@ -33,32 +36,39 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         log.info("User: " + auth.getPrincipal() + " attempting login");
 
-//        if (auth.getCredentials() == null) {
-//            log.debug("User: " + auth.getPrincipal() + " password is null");
-//            throw new PasswordMissingException("Password is null");
-//        }
-//
-//        if (auth.getPrincipal() == null) {
-//            log.debug("User: " + auth.getPrincipal() + " username is null");
-//            throw new UsernameMissingException("Username is null");
-//        }
+        if (auth.getCredentials() == null) {
+            log.debug("User: " + auth.getPrincipal() + " password is null");
+            throw new PasswordMissingException("Password is null");
+        }
+
+        if (auth.getPrincipal() == null) {
+            log.debug("User: " + auth.getPrincipal() + " username is null");
+            throw new UsernameMissingException("Username is null");
+        }
         String email = auth.getPrincipal().toString();
         String password = auth.getCredentials().toString();
-//        if (email.isEmpty()) {
-//            log.debug("User: " + auth.getPrincipal() + " email is empty");
-//            throw new UsernameMissingException("Username is empty");
-//        }
-//        if (password.isEmpty()) {
-//            log.debug("User: " + auth.getPrincipal() + " password is empty");
-//            throw new PasswordMissingException("Password is empty");
-//        }
+
+        if (email.isEmpty()) {
+            log.debug("User: " + auth.getPrincipal() + " email is empty");
+            throw new UsernameMissingException("Username is empty");
+        }
+        if (password.isEmpty()) {
+            log.debug("User: " + auth.getPrincipal() + " password is empty");
+            throw new PasswordMissingException("Password is empty");
+        }
 
         User user = userService.getUserByEmail(email);
 
-//        if (!user.isEnabled()) {
-//            log.debug("User: " + authentication.getPrincipal() + " is disabled");
-//            throw new InactiveUserException("This user account is disabled");
-//        }
+        if (user == null){
+            log.debug("User: " + auth.getPrincipal() + " does not exist");
+            throw new BadCredentialsException("Credentials are invalid");
+        }
+
+        if (!user.getIsEnabled()) {
+            log.debug("User: " + auth.getPrincipal() + " is disabled");
+            throw new InactiveUserException("This user account is disabled");
+        }
+
         if (passwordEncoder.matches(password, user.getPassword())) {
 
             log.info("User: " + auth.getPrincipal() + " logged in successfully");
