@@ -1,13 +1,10 @@
 package com.github.ser.service;
 
-import com.github.ser.exception.InvalidPasswordException;
-import com.github.ser.exception.NoUserForEmailException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
-import com.github.ser.model.requests.LoginUserRequest;
 import com.github.ser.model.requests.RegisterUserRequest;
-import com.github.ser.model.response.LoginUserResponse;
 import com.github.ser.repository.UserRepository;
+import com.github.ser.util.JwtTokenUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +17,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -46,24 +44,8 @@ public class UserService {
                 .fullName(registerUserRequest.getFullName())
                 .phoneNumber(registerUserRequest.getPhoneNumber())
                 .shouldChangePassword(registerUserRequest.getShouldChangePassword())
+                .role(registerUserRequest.getRole())
                 .build();
         return userRepository.save(newUser);
-    }
-
-    public LoginUserResponse loginUser(LoginUserRequest loginUserRequest) {
-        User existingUser = userRepository.findUserByEmail(loginUserRequest.getEmail());
-
-        if (existingUser == null){
-            throw new NoUserForEmailException("No user for "+ loginUserRequest.getEmail() + " found");
-        }
-
-        if (!passwordEncoder.matches(loginUserRequest.getPassword(), existingUser.getPassword())){
-            throw new InvalidPasswordException("Invalid password");
-        }
-
-        //TODO 07.07.2020: generate token
-        return LoginUserResponse.builder()
-                .authToken("YES")
-                .build();
     }
 }

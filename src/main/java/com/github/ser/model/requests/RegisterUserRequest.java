@@ -1,5 +1,6 @@
 package com.github.ser.model.requests;
 
+import com.github.ser.enums.Role;
 import lombok.*;
 
 @Data
@@ -20,5 +21,7 @@ public class RegisterUserRequest {
     private String phoneNumber;
 
     private Boolean shouldChangePassword;
+
+    private Role role;
 
 }

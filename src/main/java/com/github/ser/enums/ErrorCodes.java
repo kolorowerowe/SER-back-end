@@ -2,8 +2,9 @@ package com.github.ser.enums;
 
 public enum ErrorCodes {
 
-    NO_USER_WITH_EMAIL_ERROR(101),
-    INVALID_PASSWORD_ERROR(102);
+    TOKEN_EXPIRED_ERROR(101),
+    NO_USER_WITH_EMAIL_ERROR(201),
+    INVALID_PASSWORD_ERROR(202);
 
     private final int code;
 
