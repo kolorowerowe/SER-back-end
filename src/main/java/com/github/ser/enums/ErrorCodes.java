@@ -8,7 +8,7 @@ public enum ErrorCodes {
     // 2 - auth error
     TOKEN_EXPIRED(100),
     NO_USER_WITH_EMAIL(201),
-    USERNAME_MISSING(201),
+    USERNAME_MISSING(202),
     PASSWORD_MISSING(203),
     INVALID_PASSWORD(204),
     INACTIVE_USER(205),
