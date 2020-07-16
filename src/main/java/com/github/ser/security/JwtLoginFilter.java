@@ -2,9 +2,9 @@ package com.github.ser.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ser.enums.ErrorCodes;
-import com.github.ser.exception.InactiveUserException;
-import com.github.ser.exception.PasswordMissingException;
-import com.github.ser.exception.UsernameMissingException;
+import com.github.ser.exception.auth.InactiveUserException;
+import com.github.ser.exception.auth.PasswordMissingException;
+import com.github.ser.exception.auth.UsernameMissingException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.response.ErrorResponse;
 import com.github.ser.service.UserService;
@@ -95,7 +95,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .builder()
                 .message(message)
                 .errorCode(errorCode)
-                .timestamp(new Date())
                 .build()));
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

@@ -1,8 +1,8 @@
 package com.github.ser.security;
 
-import com.github.ser.exception.InactiveUserException;
-import com.github.ser.exception.PasswordMissingException;
-import com.github.ser.exception.UsernameMissingException;
+import com.github.ser.exception.auth.InactiveUserException;
+import com.github.ser.exception.auth.PasswordMissingException;
+import com.github.ser.exception.auth.UsernameMissingException;
 import com.github.ser.model.database.User;
 import com.github.ser.service.UserService;
 import com.github.ser.util.JwtTokenUtil;

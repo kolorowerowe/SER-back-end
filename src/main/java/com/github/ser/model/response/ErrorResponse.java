@@ -11,7 +11,9 @@ public class ErrorResponse {
 
     private String message;
     private int errorCode;
-    private Date timestamp;
+
+    @Builder.Default
+    private long timestamp = new Date().getTime();
 
 
 }

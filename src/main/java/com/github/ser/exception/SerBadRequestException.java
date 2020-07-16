@@ -3,16 +3,15 @@ package com.github.ser.exception;
 import com.github.ser.enums.ErrorCodes;
 import org.springframework.http.HttpStatus;
 
-public class SerRuntimeException extends RuntimeException{
+public class SerBadRequestException extends RuntimeException {
 
     protected ErrorCodes errorCode;
     private HttpStatus httpStatus;
 
-    public SerRuntimeException(String message, ErrorCodes errorCode) {
+    public SerBadRequestException(String message, ErrorCodes errorCode) {
         super(message);
         this.errorCode = errorCode;
-        this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
+        this.httpStatus = HttpStatus.BAD_REQUEST;
     }
 
     public Integer getErrorCode() {

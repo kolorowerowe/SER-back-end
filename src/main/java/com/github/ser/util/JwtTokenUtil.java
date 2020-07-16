@@ -1,14 +1,11 @@
 package com.github.ser.util;
 
 import com.github.ser.config.JwtTokenConfig;
-import com.github.ser.exception.TokenExpiredException;
+import com.github.ser.exception.auth.TokenExpiredException;
 import com.github.ser.model.database.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;

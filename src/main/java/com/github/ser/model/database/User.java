@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@With
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
