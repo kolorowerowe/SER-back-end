@@ -72,7 +72,7 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
         if (passwordEncoder.matches(password, user.getPassword())) {
 
             log.info("User: " + auth.getPrincipal() + " logged in successfully");
-            user.setLastSeen(LocalDateTime.now());
+            userService.setLastSeenNow(user);
 
             return new UsernamePasswordAuthenticationToken(user.getEmail(), null, Collections.singletonList(user.getRole()));
         } else {

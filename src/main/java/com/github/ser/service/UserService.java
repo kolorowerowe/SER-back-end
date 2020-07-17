@@ -14,6 +14,7 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtTokenUtil jwtTokenUtil) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -60,6 +60,11 @@ public class UserService {
                 .role(registerUserRequest.getRole())
                 .build();
         return userRepository.save(newUser);
+    }
+
+    public void setLastSeenNow(User user){
+        user.setLastSeen(LocalDateTime.now());
+        userRepository.save(user);
     }
 
     public User changeUserPassword(UUID userId, ChangeUserPasswordRequest changeUserPasswordRequest) {

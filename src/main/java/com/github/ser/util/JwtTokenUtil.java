@@ -1,17 +1,19 @@
 package com.github.ser.util;
 
 import com.github.ser.config.JwtTokenConfig;
-import com.github.ser.exception.auth.TokenExpiredException;
 import com.github.ser.model.database.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Component
+@Log4j2
 public class JwtTokenUtil implements Serializable {
 
     private final JwtTokenConfig jwtTokenConfig;
@@ -31,19 +33,15 @@ public class JwtTokenUtil implements Serializable {
                 .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();
     }
 
-    public String getEmailFromToken(String token) {
-
+    public String getEmailFromToken(String token) throws ExpiredJwtException {
 
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtTokenConfig.getSecret())
                 .parseClaimsJws(token)
                 .getBody();
 
-        Date expirationDate = claims.getExpiration();
-        if (expirationDate.before(new Date())) {
-            throw new TokenExpiredException("Request to parse expired token");
-        }
-
         return claims.getSubject();
+
+
     }
 }
