@@ -42,6 +42,11 @@ public class User {
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime lastSeen;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
+    private LocalDateTime userCreatedDate;
+
 
     private Boolean isEnabled;
 

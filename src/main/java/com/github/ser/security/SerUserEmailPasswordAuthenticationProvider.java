@@ -3,6 +3,7 @@ package com.github.ser.security;
 import com.github.ser.exception.auth.InactiveUserException;
 import com.github.ser.exception.auth.PasswordMissingException;
 import com.github.ser.exception.auth.UsernameMissingException;
+import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.model.database.User;
 import com.github.ser.service.UserService;
 import com.github.ser.util.JwtTokenUtil;
@@ -15,7 +16,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Component
@@ -57,28 +57,30 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
             throw new PasswordMissingException("Password is empty");
         }
 
-        User user = userService.getUserByEmail(email);
+        try {
+            User user = userService.getUserByEmail(email);
 
-        if (user == null){
-            log.debug("User: " + auth.getPrincipal() + " does not exist");
+            if (!user.getIsEnabled()) {
+                log.debug("User: " + auth.getPrincipal() + " is disabled");
+                throw new InactiveUserException("This user account is disabled");
+            }
+
+            if (passwordEncoder.matches(password, user.getPassword())) {
+
+                log.info("User: " + auth.getPrincipal() + " logged in successfully");
+                userService.setLastSeenNow(user);
+
+                return new UsernamePasswordAuthenticationToken(user.getEmail(), null, Collections.singletonList(user.getRole()));
+            } else {
+                log.info("User: " + auth.getPrincipal() + " invalid password");
+                throw new BadCredentialsException("Credentials are invalid");
+            }
+
+        } catch (NoUserForEmailException exception){
             throw new BadCredentialsException("Credentials are invalid");
         }
 
-        if (!user.getIsEnabled()) {
-            log.debug("User: " + auth.getPrincipal() + " is disabled");
-            throw new InactiveUserException("This user account is disabled");
-        }
 
-        if (passwordEncoder.matches(password, user.getPassword())) {
-
-            log.info("User: " + auth.getPrincipal() + " logged in successfully");
-            userService.setLastSeenNow(user);
-
-            return new UsernamePasswordAuthenticationToken(user.getEmail(), null, Collections.singletonList(user.getRole()));
-        } else {
-            log.info("User: " + auth.getPrincipal() + " invalid password");
-            throw new BadCredentialsException("Credentials are invalid");
-        }
 
     }
 

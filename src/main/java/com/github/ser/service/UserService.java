@@ -1,14 +1,13 @@
 package com.github.ser.service;
 
-import com.github.ser.exception.auth.InvalidOldPasswordException;
-import com.github.ser.exception.auth.InvalidRepeatPasswordException;
-import com.github.ser.exception.auth.NoUserForEmailException;
+import com.github.ser.exception.badRequest.InvalidOldPasswordException;
+import com.github.ser.exception.badRequest.InvalidRepeatPasswordException;
+import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.ChangeUserPasswordRequest;
 import com.github.ser.model.requests.RegisterUserRequest;
 import com.github.ser.repository.UserRepository;
-import com.github.ser.util.JwtTokenUtil;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,6 +57,7 @@ public class UserService {
                 .phoneNumber(registerUserRequest.getPhoneNumber())
                 .shouldChangePassword(registerUserRequest.getShouldChangePassword())
                 .role(registerUserRequest.getRole())
+                .userCreatedDate(LocalDateTime.now())
                 .build();
         return userRepository.save(newUser);
     }

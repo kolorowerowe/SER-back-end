@@ -1,4 +1,4 @@
-package com.github.ser.exception.auth;
+package com.github.ser.exception.runtime;
 
 import com.github.ser.enums.ErrorCodes;
 import com.github.ser.exception.SerRuntimeException;
