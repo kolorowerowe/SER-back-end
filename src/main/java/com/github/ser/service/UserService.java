@@ -6,6 +6,7 @@ import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.ChangeUserPasswordRequest;
+import com.github.ser.model.requests.ChangeUserPersonalInfoRequest;
 import com.github.ser.model.requests.RegisterUserRequest;
 import com.github.ser.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
@@ -65,6 +66,23 @@ public class UserService {
     public void setLastSeenNow(User user){
         user.setLastSeen(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    public User changeUserPersonalInfo(UUID userId, ChangeUserPersonalInfoRequest changeUserPersonalInfoRequest) {
+        User user = userRepository.getOne(userId);
+
+        String newFullName = changeUserPersonalInfoRequest.getFullName();
+        if (newFullName != null && !newFullName.isEmpty()){
+            user = user.withFullName(newFullName);
+        }
+
+        String newPhoneNumber = changeUserPersonalInfoRequest.getPhoneNumber();
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()){
+            user = user.withPhoneNumber(newPhoneNumber);
+        }
+
+        User savedUser =  (User) Hibernate.unproxy(userRepository.save(user));
+        return savedUser;
     }
 
     public User changeUserPassword(UUID userId, ChangeUserPasswordRequest changeUserPasswordRequest) {

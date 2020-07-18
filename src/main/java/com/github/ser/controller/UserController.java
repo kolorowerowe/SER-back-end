@@ -3,6 +3,7 @@ package com.github.ser.controller;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.ChangeUserPasswordRequest;
+import com.github.ser.model.requests.ChangeUserPersonalInfoRequest;
 import com.github.ser.model.requests.RegisterUserRequest;
 import com.github.ser.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -45,6 +46,13 @@ public class UserController {
     public ResponseEntity<User> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
         log.info("Register new user: " + registerUserRequest.getFullName());
         return new ResponseEntity<>(userService.registerUser(registerUserRequest), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<User> changeUserPersonalInfo(@PathVariable UUID userId, @RequestBody ChangeUserPersonalInfoRequest changeUserPersonalInfoRequest){
+        log.info("Changing personal info for user: " + userId);
+        return new ResponseEntity<>(userService.changeUserPersonalInfo(userId, changeUserPersonalInfoRequest), HttpStatus.OK);
+
     }
 
     @PostMapping("/{userId}/password")
