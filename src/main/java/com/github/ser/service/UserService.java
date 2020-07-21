@@ -1,14 +1,15 @@
 package com.github.ser.service;
 
+import com.github.ser.exception.auth.InvalidVerificationCodeException;
 import com.github.ser.exception.badRequest.InvalidOldPasswordException;
 import com.github.ser.exception.badRequest.InvalidRepeatPasswordException;
 import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
-import com.github.ser.model.requests.ChangeUserPasswordRequest;
-import com.github.ser.model.requests.ChangeUserPersonalInfoRequest;
-import com.github.ser.model.requests.RegisterUserRequest;
+import com.github.ser.model.requests.*;
+import com.github.ser.model.response.LoginUserResponse;
 import com.github.ser.repository.UserRepository;
+import com.github.ser.util.JwtTokenUtil;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +25,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationCodeService verificationCodeService;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final EmailService emailService;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       VerificationCodeService verificationCodeService, JwtTokenUtil jwtTokenUtil, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.verificationCodeService = verificationCodeService;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.emailService = emailService;
     }
 
     public UserListResponse getAllUsers() {
@@ -49,21 +57,45 @@ public class UserService {
         return user;
     }
 
-    public User registerUser(RegisterUserRequest registerUserRequest) {
+    public void sentVerificationCode(String email) {
+
+        String code = verificationCodeService.generateCode(email);
+
+        MailMessage verificationMessage = MailMessage.getVerificationMailMessage(email, code);
+        emailService.sendMessage(verificationMessage);
+    }
+
+    public LoginUserResponse verifyCode(String email, String code) {
+        Boolean isVerified = verificationCodeService.verifyCode(email, code);
+        if (!isVerified) {
+            throw new InvalidVerificationCodeException("Verification code error");
+        }
+
+        User user = getUserByEmail(email);
+
+        String authToken = jwtTokenUtil.generateTokenForUser(user, true);
+
+        return LoginUserResponse.builder()
+                .authToken(authToken)
+                .user(user)
+                .build();
+
+    }
+
+    public User registerNewUser(RegisterUserRequest registerUserRequest) {
 
         User newUser = User.builder()
                 .email(registerUserRequest.getEmail())
-                .password(passwordEncoder.encode(registerUserRequest.getPassword()))
                 .fullName(registerUserRequest.getFullName())
                 .phoneNumber(registerUserRequest.getPhoneNumber())
-                .shouldChangePassword(registerUserRequest.getShouldChangePassword())
                 .role(registerUserRequest.getRole())
                 .userCreatedDate(LocalDateTime.now())
+                .isActivated(false)
                 .build();
         return userRepository.save(newUser);
     }
 
-    public void setLastSeenNow(User user){
+    public void setLastSeenNow(User user) {
         user.setLastSeen(LocalDateTime.now());
         userRepository.save(user);
     }
@@ -72,16 +104,30 @@ public class UserService {
         User user = userRepository.getOne(userId);
 
         String newFullName = changeUserPersonalInfoRequest.getFullName();
-        if (newFullName != null && !newFullName.isEmpty()){
+        if (newFullName != null && !newFullName.isEmpty()) {
             user = user.withFullName(newFullName);
         }
 
         String newPhoneNumber = changeUserPersonalInfoRequest.getPhoneNumber();
-        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()){
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
             user = user.withPhoneNumber(newPhoneNumber);
         }
 
-        User savedUser =  (User) Hibernate.unproxy(userRepository.save(user));
+        User savedUser = (User) Hibernate.unproxy(userRepository.save(user));
+        return savedUser;
+    }
+
+    public User setUserPassword(UUID userId, SetUserPasswordRequest setUserPasswordRequest) {
+        User user = userRepository.getOne(userId);
+
+        if (!setUserPasswordRequest.getNewPassword().equals(setUserPasswordRequest.getRepeatNewPassword())) {
+            throw new InvalidRepeatPasswordException("Password and repeat password does not match");
+        }
+
+        User updatedUser = user.withPassword(passwordEncoder.encode(setUserPasswordRequest.getNewPassword()))
+                .withIsActivated(true);
+
+        User savedUser = (User) Hibernate.unproxy(userRepository.save(updatedUser));
         return savedUser;
     }
 
@@ -98,7 +144,7 @@ public class UserService {
 
         User updatedUser = user.withPassword(passwordEncoder.encode(changeUserPasswordRequest.getNewPassword()));
 
-        User savedUser =  (User) Hibernate.unproxy(userRepository.save(updatedUser));
+        User savedUser = (User) Hibernate.unproxy(userRepository.save(updatedUser));
         return savedUser;
     }
 }

@@ -12,10 +12,6 @@ public class RegisterUserRequest {
     @NonNull
     private String email;
 
-    private String password;
-
-    private String repeatPassword;
-
     private String fullName;
 
     private String phoneNumber;

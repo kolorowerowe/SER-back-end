@@ -1,6 +1,7 @@
 package com.github.ser.util;
 
 import com.github.ser.config.JwtTokenConfig;
+import com.github.ser.enums.Role;
 import com.github.ser.model.database.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,11 +24,11 @@ public class JwtTokenUtil implements Serializable {
     }
 
 
-    public String generateTokenForUser(User user) {
+    public String generateTokenForUser(User user, Boolean activateAccount) {
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("rol", user.getRole().getAuthority())
+                .claim("rol", activateAccount ? Role.ACTIVATE_ACCOUNT.getAuthority() : user.getRole().getAuthority())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenConfig.getExpirationTime()))
                 .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();

@@ -60,9 +60,9 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
         try {
             User user = userService.getUserByEmail(email);
 
-            if (!user.getIsEnabled()) {
-                log.debug("User: " + auth.getPrincipal() + " is disabled");
-                throw new InactiveUserException("This user account is disabled");
+            if (!user.getIsActivated()) {
+                log.debug("User: " + auth.getPrincipal() + " isn't activated yet");
+                throw new InactiveUserException("This user account isn't activated");
             }
 
             if (passwordEncoder.matches(password, user.getPassword())) {

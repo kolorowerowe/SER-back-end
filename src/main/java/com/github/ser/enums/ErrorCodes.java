@@ -4,6 +4,7 @@ public enum ErrorCodes {
 
     // 0 - general error
     UNEXPECTED(0),
+    EMAIL_NOT_SENT(1),
 
     // 1 - auth error
     TOKEN_EXPIRED(100),
@@ -15,6 +16,7 @@ public enum ErrorCodes {
     INVALID_PASSWORD(204),
     INACTIVE_USER(205),
     CREDENTIALS_INVALID(206),
+    INVALID_VERIFICATION_CODE(207),
 
     INVALID_OLD_PASSWORD(251),
     PASSWORD_DOES_NOT_MATCH(252);

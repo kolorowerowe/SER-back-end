@@ -5,6 +5,8 @@ import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.ChangeUserPasswordRequest;
 import com.github.ser.model.requests.ChangeUserPersonalInfoRequest;
 import com.github.ser.model.requests.RegisterUserRequest;
+import com.github.ser.model.requests.SetUserPasswordRequest;
+import com.github.ser.model.response.LoginUserResponse;
 import com.github.ser.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,12 +26,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/secured-all")
-    public ResponseEntity<UserListResponse> getAllUsers2() {
-        log.debug("Getting all users");
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
-
     @GetMapping(params = {})
     public ResponseEntity<UserListResponse> getAllUsers() {
         log.info("Getting all users");
@@ -43,9 +39,29 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<User> registerNewUser(@RequestBody RegisterUserRequest registerUserRequest) {
         log.info("Register new user: " + registerUserRequest.getFullName());
-        return new ResponseEntity<>(userService.registerUser(registerUserRequest), HttpStatus.OK);
+        return new ResponseEntity<>(userService.registerNewUser(registerUserRequest), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/verify/request", params = {"email"})
+    public ResponseEntity<Void> sentVerificationCode(@RequestParam String email) {
+        log.info("Started process of verification for user: " + email);
+        userService.sentVerificationCode(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/verify/check", params = {"email", "code"})
+    public ResponseEntity<LoginUserResponse> verifyCode(@RequestParam String email, @RequestParam String code) {
+        log.info("Verifying user by email: " + email + " and code: " + code);
+        LoginUserResponse loginUserResponse = userService.verifyCode(email, code);
+        return new ResponseEntity<>(loginUserResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/{userId}/password/set")
+    public ResponseEntity<User> setUserPassword(@PathVariable UUID userId, @RequestBody SetUserPasswordRequest setUserPasswordRequest){
+        log.info("Setting password for user: " + userId);
+        return new ResponseEntity<>(userService.setUserPassword(userId, setUserPasswordRequest), HttpStatus.OK);
     }
 
     @PatchMapping("/{userId}")
@@ -59,7 +75,6 @@ public class UserController {
     public ResponseEntity<User> changeUserPassword(@PathVariable UUID userId, @RequestBody ChangeUserPasswordRequest changeUserPasswordRequest){
         log.info("Changing password for user: " + userId);
         return new ResponseEntity<>(userService.changeUserPassword(userId, changeUserPasswordRequest), HttpStatus.OK);
-
     }
 
 }
