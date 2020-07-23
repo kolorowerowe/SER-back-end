@@ -48,13 +48,26 @@ public class UserService {
                 .build();
     }
 
+    public User getUserById(UUID userId) {
+        User user = userRepository.getOne(userId);
+        if (user == null) {
+            log.debug("User: " + userId + " does not exist");
+            throw new NoUserForEmailException("No user for provided email");
+        }
+        return (User) Hibernate.unproxy(user);
+    }
+
+    public void deleteUserById(UUID userId) {
+        userRepository.deleteById(userId);
+    }
+
     public User getUserByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
             log.debug("User: " + email + " does not exist");
             throw new NoUserForEmailException("No user for provided email");
         }
-        return user;
+        return (User) Hibernate.unproxy(user);
     }
 
     public void sentVerificationCode(String email) {

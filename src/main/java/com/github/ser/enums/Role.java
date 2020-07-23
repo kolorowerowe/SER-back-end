@@ -8,8 +8,7 @@ public enum Role implements GrantedAuthority {
     ORGANIZER_EDITOR(1),
     ORGANIZER_VIEWER(2),
     COMPANY_EDITOR(3),
-    COMPANY_VIEWER(4),
-    ACTIVATE_ACCOUNT(5);
+    ACTIVATE_ACCOUNT(4);
 
     private int code;
 

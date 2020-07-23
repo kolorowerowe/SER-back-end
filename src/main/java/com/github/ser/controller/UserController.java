@@ -38,7 +38,20 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
+        log.info("Getting user by uuid: " + userId);
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable UUID userId) {
+        log.info("Deleting user by uuid: " + userId);
+        userService.deleteUserById(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping()
     public ResponseEntity<User> registerNewUser(@RequestBody RegisterUserRequest registerUserRequest) {
         log.info("Register new user: " + registerUserRequest.getFullName());
         return new ResponseEntity<>(userService.registerNewUser(registerUserRequest), HttpStatus.OK);
