@@ -4,6 +4,7 @@ import com.github.ser.exception.auth.InvalidVerificationCodeException;
 import com.github.ser.exception.badRequest.InvalidOldPasswordException;
 import com.github.ser.exception.badRequest.InvalidRepeatPasswordException;
 import com.github.ser.exception.badRequest.NoUserForEmailException;
+import com.github.ser.exception.badRequest.NoUserForUuidException;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.*;
@@ -31,7 +32,9 @@ public class UserService {
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       VerificationCodeService verificationCodeService, JwtTokenUtil jwtTokenUtil, EmailService emailService) {
+                       VerificationCodeService verificationCodeService,
+                       JwtTokenUtil jwtTokenUtil,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.verificationCodeService = verificationCodeService;
@@ -49,12 +52,12 @@ public class UserService {
     }
 
     public User getUserById(UUID userId) {
-        User user = userRepository.getOne(userId);
+        User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             log.debug("User: " + userId + " does not exist");
-            throw new NoUserForEmailException("No user for provided email");
+            throw new NoUserForUuidException("No user for provided email");
         }
-        return (User) Hibernate.unproxy(user);
+        return user;
     }
 
     public void deleteUserById(UUID userId) {
@@ -67,7 +70,7 @@ public class UserService {
             log.debug("User: " + email + " does not exist");
             throw new NoUserForEmailException("No user for provided email");
         }
-        return (User) Hibernate.unproxy(user);
+        return user;
     }
 
     public void sentVerificationCode(String email) {
@@ -126,8 +129,7 @@ public class UserService {
             user = user.withPhoneNumber(newPhoneNumber);
         }
 
-        User savedUser = (User) Hibernate.unproxy(userRepository.save(user));
-        return savedUser;
+        return userRepository.save(user);
     }
 
     public User setUserPassword(UUID userId, SetUserPasswordRequest setUserPasswordRequest) {
@@ -140,8 +142,8 @@ public class UserService {
         User updatedUser = user.withPassword(passwordEncoder.encode(setUserPasswordRequest.getNewPassword()))
                 .withIsActivated(true);
 
-        User savedUser = (User) Hibernate.unproxy(userRepository.save(updatedUser));
-        return savedUser;
+        return userRepository.save(updatedUser);
+
     }
 
     public User changeUserPassword(UUID userId, ChangeUserPasswordRequest changeUserPasswordRequest) {
@@ -157,7 +159,7 @@ public class UserService {
 
         User updatedUser = user.withPassword(passwordEncoder.encode(changeUserPasswordRequest.getNewPassword()));
 
-        User savedUser = (User) Hibernate.unproxy(userRepository.save(updatedUser));
-        return savedUser;
+        return userRepository.save(updatedUser);
+
     }
 }

@@ -1,10 +1,10 @@
 package com.github.ser.model.database;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.ser.enums.Role;
-import com.github.ser.util.DateTimeUtils;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static com.github.ser.util.DateTimeUtils.*;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @With
 @Builder
