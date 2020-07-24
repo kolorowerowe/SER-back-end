@@ -16,8 +16,6 @@ public class RegisterUserRequest {
 
     private String phoneNumber;
 
-    private Boolean shouldChangePassword;
-
     private Role role;
 
 }
