@@ -4,6 +4,7 @@ import com.github.ser.SerApplication;
 import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.exception.badRequest.NoUserForUuidException;
 import com.github.ser.model.database.User;
+import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.repository.UserRepository;
 import com.github.ser.util.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,8 @@ import java.util.UUID;
 
 import static com.github.ser.testutils.PopulateDatabase.populateUserDatabase;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +51,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        userUuid = populateUserDatabase(userRepository);
+        userUuid = populateUserDatabase(userRepository).get(0);
 
         this.userService = new UserService(userRepository, passwordEncoder, verificationCodeService, jwtTokenUtil, emailService);
     }
@@ -95,5 +98,31 @@ class UserServiceTest {
                 () -> assertNotNull(user),
                 () -> assertEquals("Dominik K", user.getFullName())
         );
+    }
+
+    @Test
+    @DisplayName("Get all users - return UserListResponse")
+    void getAllUsers_returnUserListResponse() {
+
+
+        UserListResponse userListResponse = userService.getAllUsers();
+
+        assertAll(
+                () -> assertNotNull(userListResponse),
+                () -> assertEquals(2, userListResponse.getCount()),
+                () -> assertEquals("Dominik K", userListResponse.getUsers().get(0).getFullName())
+        );
+    }
+
+    @Test
+    @DisplayName("Delete user by id")
+    void deleteUserById() {
+
+        assertDoesNotThrow(() -> userService.getUserById(userUuid));
+
+        userService.deleteUserById(userUuid);
+
+        assertThrows(NoUserForUuidException.class, () -> userService.getUserById(userUuid));
+
     }
 }
