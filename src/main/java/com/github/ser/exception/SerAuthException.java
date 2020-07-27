@@ -6,8 +6,8 @@ import org.springframework.security.core.AuthenticationException;
 
 public class SerAuthException extends AuthenticationException {
 
-    protected ErrorCodes errorCode;
-    private HttpStatus httpStatus;
+    protected final ErrorCodes errorCode;
+    private final HttpStatus httpStatus;
 
     public SerAuthException(String message, ErrorCodes errorCode) {
         super(message);

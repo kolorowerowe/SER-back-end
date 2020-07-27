@@ -20,7 +20,10 @@ public enum ErrorCodes {
     INVALID_VERIFICATION_CODE(207),
 
     INVALID_OLD_PASSWORD(251),
-    PASSWORD_DOES_NOT_MATCH(252);
+    PASSWORD_DOES_NOT_MATCH(252),
+
+    // 3 - company error
+    NO_COMPANY_WITH_UUID(300);
 
 
     private final int code;

@@ -5,6 +5,7 @@ import com.github.ser.exception.badRequest.InvalidOldPasswordException;
 import com.github.ser.exception.badRequest.InvalidRepeatPasswordException;
 import com.github.ser.exception.badRequest.NoUserForEmailException;
 import com.github.ser.exception.badRequest.NoUserForUuidException;
+import com.github.ser.model.database.CompanyAccess;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.requests.*;
@@ -12,7 +13,6 @@ import com.github.ser.model.response.LoginUserResponse;
 import com.github.ser.repository.UserRepository;
 import com.github.ser.util.JwtTokenUtil;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -161,5 +161,17 @@ public class UserService {
 
         return userRepository.save(updatedUser);
 
+    }
+
+    public User addCompanyAccess(UUID userId, UUID companyId){
+        User user = getUserById(userId);
+
+        CompanyAccess newCompanyAccess = CompanyAccess.builder()
+                .companyUUID(companyId)
+                .user(user)
+                .build();
+
+        user.getCompanyAccessList().add(newCompanyAccess);
+        return userRepository.save(user);
     }
 }

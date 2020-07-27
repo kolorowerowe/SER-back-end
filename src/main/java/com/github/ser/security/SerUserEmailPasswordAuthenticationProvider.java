@@ -23,12 +23,10 @@ import java.util.Collections;
 public class SerUserEmailPasswordAuthenticationProvider implements AuthenticationProvider {
 
     private final UserService userService;
-    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
 
-    public SerUserEmailPasswordAuthenticationProvider(UserService userService, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
+    public SerUserEmailPasswordAuthenticationProvider(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.jwtTokenUtil = jwtTokenUtil;
         this.passwordEncoder = passwordEncoder;
     }
 

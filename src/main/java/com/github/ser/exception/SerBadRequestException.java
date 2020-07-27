@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class SerBadRequestException extends RuntimeException {
 
-    protected ErrorCodes errorCode;
-    private HttpStatus httpStatus;
+    protected final ErrorCodes errorCode;
+    private final HttpStatus httpStatus;
 
     public SerBadRequestException(String message, ErrorCodes errorCode) {
         super(message);

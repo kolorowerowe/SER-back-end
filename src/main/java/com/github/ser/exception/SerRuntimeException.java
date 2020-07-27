@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class SerRuntimeException extends RuntimeException{
 
-    protected ErrorCodes errorCode;
-    private HttpStatus httpStatus;
+    protected final ErrorCodes errorCode;
+    private final HttpStatus httpStatus;
 
     public SerRuntimeException(String message, ErrorCodes errorCode) {
         super(message);

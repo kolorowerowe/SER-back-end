@@ -54,11 +54,11 @@ class UserServiceTest {
 
     private UserService userService;
 
-    private UUID userUuid;
+    private User firstUser;
 
     @BeforeEach
     void setup() {
-        userUuid = populateUserDatabase(userRepository).get(0);
+        firstUser = populateUserDatabase(userRepository).get(0);
         populateVerificationCodeRepository(verificationCodeRepository);
 
         verificationCodeService = new VerificationCodeService(verificationCodeRepository);
@@ -88,7 +88,7 @@ class UserServiceTest {
     void getUserById_returnUser() {
 
 
-        User user = userService.getUserById(userUuid);
+        User user = userService.getUserById(firstUser.getUuid());
 
         assertAll(
                 () -> assertNotNull(user),
@@ -118,7 +118,7 @@ class UserServiceTest {
 
         assertAll(
                 () -> assertNotNull(userListResponse),
-                () -> assertEquals(2, userListResponse.getCount()),
+                () -> assertEquals(3, userListResponse.getCount()),
                 () -> assertEquals("Dominik K", userListResponse.getUsers().get(0).getFullName())
         );
     }
@@ -127,11 +127,11 @@ class UserServiceTest {
     @DisplayName("Delete user by id")
     void deleteUserById() {
 
-        assertDoesNotThrow(() -> userService.getUserById(userUuid));
+        assertDoesNotThrow(() -> userService.getUserById(firstUser.getUuid()));
 
-        userService.deleteUserById(userUuid);
+        userService.deleteUserById(firstUser.getUuid());
 
-        assertThrows(NoUserForUuidException.class, () -> userService.getUserById(userUuid));
+        assertThrows(NoUserForUuidException.class, () -> userService.getUserById(firstUser.getUuid()));
 
     }
 

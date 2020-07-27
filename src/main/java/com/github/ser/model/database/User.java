@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.github.ser.util.DateTimeUtils.*;
@@ -53,5 +55,8 @@ public class User {
     @NonNull
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompanyAccess> companyAccessList;
 
 }
