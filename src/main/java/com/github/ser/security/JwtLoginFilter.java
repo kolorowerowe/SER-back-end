@@ -62,7 +62,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = (String) authResult.getPrincipal();
         User user = userService.getUserByEmail(email);
 
-        String authToken = jwtTokenUtil.generateTokenForUser(user, false);
+        String authToken = jwtTokenUtil.generateTokenForUser(user);
 
         response.addHeader("Authorization", "Bearer " + authToken);
         response.getWriter().write("{\"authToken\": \"" + authToken + "\"}");

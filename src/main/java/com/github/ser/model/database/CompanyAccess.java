@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -30,6 +29,8 @@ public class CompanyAccess {
     @JsonIgnore
     private User user;
 
-    private UUID companyUUID;
+    private UUID companyUuid;
+
+    private String companyName;
 
 }

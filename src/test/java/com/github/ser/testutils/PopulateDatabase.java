@@ -9,7 +9,6 @@ import com.github.ser.repository.UserRepository;
 import com.github.ser.repository.VerificationCodeRepository;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,6 +66,8 @@ public class PopulateDatabase {
 
         Company company1 = Company.builder()
                 .name("Galileo")
+                .contactPhone("+1234")
+                .taxId("999")
                 .primaryUserId(user.getUuid())
                 .build();
 

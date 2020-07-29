@@ -2,6 +2,7 @@ package com.github.ser.controller;
 
 import com.github.ser.model.database.Company;
 import com.github.ser.model.lists.CompanyListResponse;
+import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.service.CompanyService;
 import lombok.extern.log4j.Log4j2;
@@ -38,6 +39,20 @@ public class CompanyController {
     public ResponseEntity<Company> registerNewCompany(@RequestBody CreateCompanyRequest createCompanyRequest) {
         log.info("Register new company: " + createCompanyRequest.getName());
         return new ResponseEntity<>(companyService.createNewCompany(createCompanyRequest), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<Void> deleteCompanyById(@PathVariable UUID companyId) {
+        log.info("Deleting company by uuid: " + companyId);
+        companyService.deleteCompanyById(companyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/{companyId}")
+    public ResponseEntity<Company> changeCompanyDetails(@PathVariable UUID companyId, @RequestBody ChangeCompanyDetailsRequest changeCompanyDetailsRequest){
+        log.info("Changing company details: " + companyId);
+        return new ResponseEntity<>(companyService.changeCompanyDetails(companyId, changeCompanyDetailsRequest), HttpStatus.OK);
+
     }
 
 }

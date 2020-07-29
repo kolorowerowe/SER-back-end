@@ -89,7 +89,7 @@ public class UserService {
 
         User user = getUserByEmail(email);
 
-        String authToken = jwtTokenUtil.generateTokenForUser(user, true);
+        String authToken = jwtTokenUtil.generateActivationTokenForUser(user);
 
         return LoginUserResponse.builder()
                 .authToken(authToken)
@@ -163,11 +163,12 @@ public class UserService {
 
     }
 
-    public User addCompanyAccess(UUID userId, UUID companyId){
+    public User addCompanyAccess(UUID userId, UUID companyId, String companyName){
         User user = getUserById(userId);
 
         CompanyAccess newCompanyAccess = CompanyAccess.builder()
-                .companyUUID(companyId)
+                .companyUuid(companyId)
+                .companyName(companyName)
                 .user(user)
                 .build();
 

@@ -24,11 +24,21 @@ public class JwtTokenUtil implements Serializable {
     }
 
 
-    public String generateTokenForUser(User user, Boolean activateAccount) {
+    public String generateActivationTokenForUser(User user) {
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("rol", activateAccount ? Role.ACTIVATE_ACCOUNT.getAuthority() : user.getRole().getAuthority())
+                .claim("rol", Role.ACTIVATE_ACCOUNT.getAuthority())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenConfig.getExpirationTime()))
+                .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();
+    }
+
+    public String generateTokenForUser(User user) {
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("rol", user.getRole().getAuthority())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenConfig.getExpirationTime()))
                 .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();

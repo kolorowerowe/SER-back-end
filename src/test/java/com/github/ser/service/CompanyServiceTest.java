@@ -5,7 +5,9 @@ import com.github.ser.exception.badRequest.NoCompanyForUuidException;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.CompanyListResponse;
+import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
+import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
 import com.github.ser.repository.UserRepository;
 import com.github.ser.util.JwtTokenUtil;
@@ -33,6 +35,9 @@ class CompanyServiceTest {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private CompanyAccessRepository companyAccessRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -66,7 +71,7 @@ class CompanyServiceTest {
         companyUuid = populateCompanyRepository(companyRepository, user).get(0);
 
         userService = new UserService(userRepository, passwordEncoder, verificationCodeService, jwtTokenUtil, emailService);
-        companyService = new CompanyService(companyRepository, userService);
+        companyService = new CompanyService(companyRepository, companyAccessRepository, userService);
     }
 
     @Test
@@ -123,7 +128,55 @@ class CompanyServiceTest {
         assertAll(
                 () -> assertEquals("Zeus", company.getName()),
                 () -> assertEquals(user.getUuid(), company.getPrimaryUserId()),
-                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyUUID().equals(company.getUuid())))
+                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyUuid().equals(company.getUuid())))
+        );
+
+    }
+
+    @Test
+    @DisplayName("Delete company by id")
+    void deleteCompanyById() {
+
+        assertDoesNotThrow(() -> companyService.getCompanyById(companyUuid));
+
+        companyService.deleteCompanyById(companyUuid);
+
+        assertThrows(NoCompanyForUuidException.class, () -> companyService.getCompanyById(companyUuid));
+
+    }
+
+    @Test
+    @DisplayName("Change company details - change only Contact phone")
+    void changeCompanyDetails_changePhone(){
+
+        ChangeCompanyDetailsRequest changeCompanyDetailsRequest = ChangeCompanyDetailsRequest.builder()
+                .contactPhone("+5678")
+                .taxId("")
+                .build();
+
+        Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+
+        assertAll(
+                () -> assertEquals("+5678", updatedCompany.getContactPhone()),
+                () -> assertEquals("999", updatedCompany.getTaxId())
+        );
+
+    }
+
+    @Test
+    @DisplayName("Change company details - Contact phone and Tax ID")
+    void changeCompanyDetails_changePhoneAndTaxId(){
+
+        ChangeCompanyDetailsRequest changeCompanyDetailsRequest = ChangeCompanyDetailsRequest.builder()
+                .contactPhone("+5678")
+                .taxId("8888")
+                .build();
+
+        Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+
+        assertAll(
+                () -> assertEquals("+5678", updatedCompany.getContactPhone()),
+                () -> assertEquals("8888", updatedCompany.getTaxId())
         );
 
     }
