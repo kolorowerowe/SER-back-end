@@ -24,7 +24,7 @@ public class VerificationCode {
     @Id
     @Column(name = "id")
     @GeneratedValue
-    private UUID uuid;
+    private UUID id;
 
     @NonNull
     private String code;

@@ -31,7 +31,7 @@ public class CompanyController {
 
     @GetMapping("/{companyId}")
     public ResponseEntity<Company> getCompanyById(@PathVariable UUID companyId) {
-        log.info("Getting company by uuid: " + companyId);
+        log.info("Getting company by id: " + companyId);
         return new ResponseEntity<>(companyService.getCompanyById(companyId), HttpStatus.OK);
     }
 
@@ -43,7 +43,7 @@ public class CompanyController {
 
     @DeleteMapping("/{companyId}")
     public ResponseEntity<Void> deleteCompanyById(@PathVariable UUID companyId) {
-        log.info("Deleting company by uuid: " + companyId);
+        log.info("Deleting company by id: " + companyId);
         companyService.deleteCompanyById(companyId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

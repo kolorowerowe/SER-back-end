@@ -18,7 +18,7 @@ public class PopulateDatabase {
         userRepository.deleteAll();
 
         User user1 = User.builder()
-                .uuid(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000000"))
                 .email("dominik@ser.pl")
                 .fullName("Dominik K")
                 .isActivated(true)
@@ -26,7 +26,7 @@ public class PopulateDatabase {
                 .build();
 
         User user2 = User.builder()
-                .uuid(UUID.fromString("00000000-0000-0000-0000-000000000001"))
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                 .email("rekin@ser.pl")
                 .fullName("Rekin rekin")
                 .isActivated(false)
@@ -34,7 +34,7 @@ public class PopulateDatabase {
                 .build();
 
         User user3 = User.builder()
-                .uuid(UUID.fromString("00000000-0000-0000-0000-000000000002"))
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000002"))
                 .email("lama@ser.pl")
                 .fullName("Lama lama")
                 .isActivated(true)
@@ -68,18 +68,18 @@ public class PopulateDatabase {
                 .name("Galileo")
                 .contactPhone("+1234")
                 .taxId("999")
-                .primaryUserId(user.getUuid())
+                .primaryUserId(user.getId())
                 .build();
 
         Company company2 = Company.builder()
                 .name("Copernicus")
-                .primaryUserId(user.getUuid())
+                .primaryUserId(user.getId())
                 .build();
 
         Company savedCompany1 = companyRepository.save(company1);
         Company savedCompany2 = companyRepository.save(company2);
 
-        return Arrays.asList(savedCompany1.getUuid(), savedCompany2.getUuid());
+        return Arrays.asList(savedCompany1.getId(), savedCompany2.getId());
 
     }
 }

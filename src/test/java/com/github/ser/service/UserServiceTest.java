@@ -88,7 +88,7 @@ class UserServiceTest {
     void getUserById_returnUser() {
 
 
-        User user = userService.getUserById(firstUser.getUuid());
+        User user = userService.getUserById(firstUser.getId());
 
         assertAll(
                 () -> assertNotNull(user),
@@ -127,11 +127,11 @@ class UserServiceTest {
     @DisplayName("Delete user by id")
     void deleteUserById() {
 
-        assertDoesNotThrow(() -> userService.getUserById(firstUser.getUuid()));
+        assertDoesNotThrow(() -> userService.getUserById(firstUser.getId()));
 
-        userService.deleteUserById(firstUser.getUuid());
+        userService.deleteUserById(firstUser.getId());
 
-        assertThrows(NoUserForUuidException.class, () -> userService.getUserById(firstUser.getUuid()));
+        assertThrows(NoUserForUuidException.class, () -> userService.getUserById(firstUser.getId()));
 
     }
 

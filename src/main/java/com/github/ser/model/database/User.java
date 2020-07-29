@@ -11,10 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import static com.github.ser.util.DateTimeUtils.*;
+import static com.github.ser.util.DateTimeUtils.DATE_TIME_FORMAT;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
@@ -29,7 +28,7 @@ public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue
-    private UUID uuid;
+    private UUID id;
 
     @NonNull
     private String email;

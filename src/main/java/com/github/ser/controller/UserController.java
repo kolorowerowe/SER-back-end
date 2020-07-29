@@ -40,13 +40,13 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
-        log.info("Getting user by uuid: " + userId);
+        log.info("Getting user by id: " + userId);
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID userId) {
-        log.info("Deleting user by uuid: " + userId);
+        log.info("Deleting user by id: " + userId);
         userService.deleteUserById(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

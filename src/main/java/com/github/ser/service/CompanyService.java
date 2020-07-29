@@ -63,7 +63,7 @@ public class CompanyService {
 
         userService.addCompanyAccess(
                 createCompanyRequest.getPrimaryUserId(),
-                savedCompany.getUuid(),
+                savedCompany.getId(),
                 savedCompany.getName()
         );
 
@@ -71,7 +71,7 @@ public class CompanyService {
     }
 
     public void deleteCompanyById(UUID companyId) {
-        companyAccessRepository.deleteAllByCompanyUuid(companyId);
+        companyAccessRepository.deleteAllByCompanyId(companyId);
         companyRepository.deleteById(companyId);
     }
 

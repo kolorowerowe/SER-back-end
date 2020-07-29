@@ -9,6 +9,6 @@ import java.util.UUID;
 @Repository
 public interface CompanyAccessRepository extends JpaRepository<CompanyAccess, UUID> {
 
-    void deleteAllByCompanyUuid(UUID companyUuid);
+    void deleteAllByCompanyId(UUID companyId);
 
 }

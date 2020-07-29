@@ -29,7 +29,7 @@ public class CompanyAccess {
     @JsonIgnore
     private User user;
 
-    private UUID companyUuid;
+    private UUID companyId;
 
     private String companyName;
 

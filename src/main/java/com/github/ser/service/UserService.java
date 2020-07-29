@@ -167,7 +167,7 @@ public class UserService {
         User user = getUserById(userId);
 
         CompanyAccess newCompanyAccess = CompanyAccess.builder()
-                .companyUuid(companyId)
+                .companyId(companyId)
                 .companyName(companyName)
                 .user(user)
                 .build();

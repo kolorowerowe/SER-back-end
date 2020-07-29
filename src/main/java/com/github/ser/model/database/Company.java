@@ -26,7 +26,7 @@ public class Company {
     @Id
     @Column(name = "id")
     @GeneratedValue
-    private UUID uuid;
+    private UUID id;
 
     private UUID primaryUserId;
 

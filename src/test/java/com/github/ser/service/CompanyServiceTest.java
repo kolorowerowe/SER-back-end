@@ -119,16 +119,16 @@ class CompanyServiceTest {
                 .name("Zeus")
                 .contactPhone("+1234")
                 .taxId("111")
-                .primaryUserId(user.getUuid())
+                .primaryUserId(user.getId())
                 .build();
 
         Company company = companyService.createNewCompany(createCompanyRequest);
-        User userWithCompanyAccess = userService.getUserById(user.getUuid());
+        User userWithCompanyAccess = userService.getUserById(user.getId());
 
         assertAll(
                 () -> assertEquals("Zeus", company.getName()),
-                () -> assertEquals(user.getUuid(), company.getPrimaryUserId()),
-                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyUuid().equals(company.getUuid())))
+                () -> assertEquals(user.getId(), company.getPrimaryUserId()),
+                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyId().equals(company.getId())))
         );
 
     }
