@@ -136,7 +136,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Verify cose - throws InvalidVerificationCodeException")
+    @DisplayName("Verify code - throws InvalidVerificationCodeException")
     void verifyCode_throwsException() {
 
         String email = "dominik@ser.pl";

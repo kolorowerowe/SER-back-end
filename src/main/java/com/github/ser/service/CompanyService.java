@@ -70,6 +70,7 @@ public class CompanyService {
         return savedCompany;
     }
 
+    @Transactional
     public void deleteCompanyById(UUID companyId) {
         companyAccessRepository.deleteAllByCompanyId(companyId);
         companyRepository.deleteById(companyId);
