@@ -1,12 +1,15 @@
 package com.github.ser.service;
 
 import com.github.ser.exception.badRequest.NoCompanyForUuidException;
+import com.github.ser.model.database.Address;
 import com.github.ser.model.database.Company;
+import com.github.ser.model.database.CompanyAccess;
 import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
+import com.github.ser.util.ModelUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -48,6 +52,20 @@ public class CompanyService {
         return company;
     }
 
+    public CompanyListResponse getCompaniesForUser(UUID userId) {
+
+        List<CompanyAccess> companyAccesses = userService.getUserById(userId).getCompanyAccessList();
+        List<Company> companies = companyAccesses
+                .stream()
+                .map(companyAccess -> getCompanyById(companyAccess.getCompanyId()))
+                .collect(Collectors.toList());
+
+        return CompanyListResponse.builder()
+                .companyList(companies)
+                .count(companies.size())
+                .build();
+    }
+
     @Transactional
     public Company createNewCompany(CreateCompanyRequest createCompanyRequest) {
 
@@ -59,7 +77,18 @@ public class CompanyService {
                 .companyCreatedDate(LocalDateTime.now())
                 .build();
 
-        Company savedCompany =  companyRepository.save(company);
+        Address companyAddress = Address.builder()
+                .street(createCompanyRequest.getAddress().getStreet())
+                .buildingNumber(createCompanyRequest.getAddress().getBuildingNumber())
+                .flatNumber(createCompanyRequest.getAddress().getFlatNumber())
+                .city(createCompanyRequest.getAddress().getCity())
+                .postalCode(createCompanyRequest.getAddress().getPostalCode())
+                .company(company)
+                .build();
+
+        company.setAddress(companyAddress);
+
+        Company savedCompany = companyRepository.save(company);
 
         userService.addCompanyAccess(
                 createCompanyRequest.getPrimaryUserId(),
@@ -79,17 +108,9 @@ public class CompanyService {
     public Company changeCompanyDetails(UUID companyId, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
         Company company = getCompanyById(companyId);
 
-        String newContactPhone = changeCompanyDetailsRequest.getContactPhone();
-        if (newContactPhone != null && !newContactPhone.isEmpty()) {
-            company = company.withContactPhone(newContactPhone);
-        }
+        Company updatedCompany = ModelUtils.copyCompanyNonNullProperties(company, changeCompanyDetailsRequest);
 
-        String newTaxId= changeCompanyDetailsRequest.getTaxId();
-        if (newTaxId != null && !newTaxId.isEmpty()) {
-            company = company.withTaxId(newTaxId);
-        }
-
-        return companyRepository.save(company);
+        return companyRepository.save(updatedCompany);
     }
 
 }

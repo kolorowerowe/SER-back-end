@@ -6,7 +6,7 @@ import com.github.ser.exception.SerBadRequestException;
 public class NoUserForEmailException extends SerBadRequestException {
 
     public NoUserForEmailException(String message) {
-        super(message, ErrorCodes.NO_USER_WITH_EMAIL);
+        super(message, ErrorCodes.NO_USER_FOR_PROVIDED_EMAIL);
     }
 
 }

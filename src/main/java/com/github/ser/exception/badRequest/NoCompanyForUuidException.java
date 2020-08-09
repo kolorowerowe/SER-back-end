@@ -6,7 +6,7 @@ import com.github.ser.exception.SerBadRequestException;
 public class NoCompanyForUuidException extends SerBadRequestException {
 
     public NoCompanyForUuidException(String message) {
-        super(message, ErrorCodes.NO_COMPANY_WITH_UUID);
+        super(message, ErrorCodes.NO_COMPANY_FOR_PROVIDED_ID);
     }
 
 }

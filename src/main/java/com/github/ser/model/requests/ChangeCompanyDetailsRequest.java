@@ -12,4 +12,6 @@ public class ChangeCompanyDetailsRequest {
 
     private String taxId;
 
+    private AddressRequest address;
+
 }

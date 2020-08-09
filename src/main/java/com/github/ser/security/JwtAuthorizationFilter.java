@@ -1,8 +1,10 @@
 package com.github.ser.security;
 
+import com.github.ser.exception.runtime.TokenExpiredException;
 import com.github.ser.model.database.User;
 import com.github.ser.service.UserService;
 import com.github.ser.util.JwtTokenUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,6 +59,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 if (email != null) {
                     return new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(user.getRole()));
                 }
+
+            } catch (ExpiredJwtException ex) {
+                log.error("Expired token: ", ex);
+                throw new TokenExpiredException("Token is expired, please log in again");
 
             } catch (JwtException ex) {
                 log.error("JWT exception: ", ex);

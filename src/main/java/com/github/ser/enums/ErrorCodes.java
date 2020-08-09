@@ -10,8 +10,8 @@ public enum ErrorCodes {
     TOKEN_EXPIRED(100),
 
     // 2 - login user error
-    NO_USER_WITH_UUID(200),
-    NO_USER_WITH_EMAIL(201),
+    NO_USER_FOR_PROVIDED_ID(200),
+    NO_USER_FOR_PROVIDED_EMAIL(201),
     USERNAME_MISSING(202),
     PASSWORD_MISSING(203),
     INVALID_PASSWORD(204),
@@ -23,7 +23,7 @@ public enum ErrorCodes {
     PASSWORD_DOES_NOT_MATCH(252),
 
     // 3 - company error
-    NO_COMPANY_WITH_UUID(300);
+    NO_COMPANY_FOR_PROVIDED_ID(300);
 
 
     private final int code;

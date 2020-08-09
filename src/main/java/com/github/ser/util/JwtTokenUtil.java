@@ -4,7 +4,6 @@ import com.github.ser.config.JwtTokenConfig;
 import com.github.ser.enums.Role;
 import com.github.ser.model.database.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
@@ -44,7 +43,7 @@ public class JwtTokenUtil implements Serializable {
                 .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();
     }
 
-    public String getEmailFromToken(String token) throws ExpiredJwtException {
+    public String getEmailFromToken(String token) {
 
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtTokenConfig.getSecret())

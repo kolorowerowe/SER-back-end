@@ -15,7 +15,6 @@ import static com.github.ser.util.DateTimeUtils.DATE_TIME_FORMAT;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
-@With
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -41,5 +40,7 @@ public class Company {
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime companyCreatedDate;
 
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address address;
 
 }

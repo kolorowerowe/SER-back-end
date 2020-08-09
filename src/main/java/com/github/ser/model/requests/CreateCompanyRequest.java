@@ -2,6 +2,7 @@ package com.github.ser.model.requests;
 
 import lombok.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Data
@@ -15,5 +16,8 @@ public class CreateCompanyRequest {
     private String name;
     private String contactPhone;
     private String taxId;
+
+    @Valid
+    private AddressRequest address;
 
 }

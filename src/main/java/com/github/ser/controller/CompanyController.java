@@ -29,6 +29,12 @@ public class CompanyController {
         return new ResponseEntity<>(companyService.getAllCompanies(), HttpStatus.OK);
     }
 
+    @GetMapping(params = "userId")
+    public ResponseEntity<CompanyListResponse> getCompaniesForUser(@RequestParam UUID userId) {
+        log.info("Getting companies for user: " + userId);
+        return new ResponseEntity<>(companyService.getCompaniesForUser(userId), HttpStatus.OK);
+    }
+
     @GetMapping("/{companyId}")
     public ResponseEntity<Company> getCompanyById(@PathVariable UUID companyId) {
         log.info("Getting company by id: " + companyId);

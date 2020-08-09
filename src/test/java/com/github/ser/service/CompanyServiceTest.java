@@ -5,6 +5,7 @@ import com.github.ser.exception.badRequest.NoCompanyForUuidException;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.CompanyListResponse;
+import com.github.ser.model.requests.AddressRequest;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.repository.CompanyAccessRepository;
@@ -120,6 +121,12 @@ class CompanyServiceTest {
                 .contactPhone("+1234")
                 .taxId("111")
                 .primaryUserId(user.getId())
+                .address(AddressRequest.builder()
+                        .buildingNumber("12")
+                        .city("Kraków")
+                        .postalCode("12-12")
+                        .street("aa")
+                        .build())
                 .build();
 
         Company company = companyService.createNewCompany(createCompanyRequest);
@@ -128,6 +135,7 @@ class CompanyServiceTest {
         assertAll(
                 () -> assertEquals("Zeus", company.getName()),
                 () -> assertEquals(user.getId(), company.getPrimaryUserId()),
+                () -> assertEquals("Kraków", company.getAddress().getCity()),
                 () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyId().equals(company.getId())))
         );
 
@@ -147,11 +155,14 @@ class CompanyServiceTest {
 
     @Test
     @DisplayName("Change company details - change only Contact phone")
-    void changeCompanyDetails_changePhone(){
+    void changeCompanyDetails_changePhone() {
 
         ChangeCompanyDetailsRequest changeCompanyDetailsRequest = ChangeCompanyDetailsRequest.builder()
                 .contactPhone("+5678")
                 .taxId("")
+                .address(AddressRequest.builder()
+                        .buildingNumber("12")
+                        .build())
                 .build();
 
         Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
@@ -165,11 +176,14 @@ class CompanyServiceTest {
 
     @Test
     @DisplayName("Change company details - Contact phone and Tax ID")
-    void changeCompanyDetails_changePhoneAndTaxId(){
+    void changeCompanyDetails_changePhoneAndTaxId() {
 
         ChangeCompanyDetailsRequest changeCompanyDetailsRequest = ChangeCompanyDetailsRequest.builder()
                 .contactPhone("+5678")
                 .taxId("8888")
+                .address(AddressRequest.builder()
+                        .buildingNumber("12")
+                        .build())
                 .build();
 
         Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);

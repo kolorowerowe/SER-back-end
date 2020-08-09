@@ -6,7 +6,7 @@ import com.github.ser.exception.SerBadRequestException;
 public class NoUserForUuidException extends SerBadRequestException {
 
     public NoUserForUuidException(String message) {
-        super(message, ErrorCodes.NO_USER_WITH_UUID);
+        super(message, ErrorCodes.NO_USER_FOR_PROVIDED_ID);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.github.ser.testutils;
 
 import com.github.ser.enums.Role;
+import com.github.ser.model.database.Address;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.User;
 import com.github.ser.model.database.VerificationCode;
@@ -61,7 +62,7 @@ public class PopulateDatabase {
 
     }
 
-    public static List<UUID> populateCompanyRepository(CompanyRepository companyRepository, User user){
+    public static List<UUID> populateCompanyRepository(CompanyRepository companyRepository, User user) {
         companyRepository.deleteAll();
 
         Company company1 = Company.builder()
@@ -71,10 +72,21 @@ public class PopulateDatabase {
                 .primaryUserId(user.getId())
                 .build();
 
+        company1.setAddress(Address.builder()
+                .buildingNumber("1")
+                .company(company1)
+                .build());
+
         Company company2 = Company.builder()
                 .name("Copernicus")
                 .primaryUserId(user.getId())
                 .build();
+
+        company2.setAddress(Address.builder()
+                .buildingNumber("1")
+                .company(company2)
+                .build());
+
 
         Company savedCompany1 = companyRepository.save(company1);
         Company savedCompany2 = companyRepository.save(company2);
