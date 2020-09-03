@@ -23,7 +23,9 @@ public enum ErrorCodes {
     PASSWORD_DOES_NOT_MATCH(252),
 
     // 3 - company error
-    NO_COMPANY_FOR_PROVIDED_ID(300);
+    NO_COMPANY_FOR_PROVIDED_ID(300),
+
+    NO_SPONSORSHIP_FOR_PROVIDED_ID(350);
 
 
     private final int code;

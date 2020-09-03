@@ -54,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/verify/**").permitAll()
                 .antMatchers("/user/password/set").hasRole("ACTIVATE_ACCOUNT")
                 .antMatchers("/user/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
+                .antMatchers("/company/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
+                .antMatchers("/sponsorship-package/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter( new JwtLoginFilter(authenticationManager, jwtTokenUtil, userService))
