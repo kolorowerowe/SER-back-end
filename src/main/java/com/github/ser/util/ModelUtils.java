@@ -58,8 +58,11 @@ public class ModelUtils {
 
     public static SponsorshipPackage copySponsorshipPackageNonNullProperties(SponsorshipPackage sponsorshipPackage, ChangeSponsorshipPackageRequest changeSponsorshipPackageRequest){
 
-        sponsorshipPackage.setPrices(changeSponsorshipPackageRequest.getPrices());
-        sponsorshipPackage.setTranslations(changeSponsorshipPackageRequest.getTranslations());
+        sponsorshipPackage.getPrices().clear();
+        sponsorshipPackage.getPrices().addAll(changeSponsorshipPackageRequest.getPrices());
+
+        sponsorshipPackage.getTranslations().clear();
+        sponsorshipPackage.getTranslations().addAll(changeSponsorshipPackageRequest.getTranslations());
 
         Double newStandSize = changeSponsorshipPackageRequest.getStandSize();
         if (notEmpty(newStandSize)) {

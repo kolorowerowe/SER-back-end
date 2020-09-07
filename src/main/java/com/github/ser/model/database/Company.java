@@ -43,7 +43,7 @@ public class Company {
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsorship_package_id")
     private SponsorshipPackage sponsorshipPackage;
 

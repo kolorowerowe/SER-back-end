@@ -4,6 +4,7 @@ import com.github.ser.exception.badRequest.NoCompanyForUuidException;
 import com.github.ser.model.database.Address;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.CompanyAccess;
+import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
@@ -26,11 +27,13 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyAccessRepository companyAccessRepository;
     private final UserService userService;
+    private final SponsorshipPackageService sponsorshipPackageService;
 
-    public CompanyService(CompanyRepository companyRepository, CompanyAccessRepository companyAccessRepository, UserService userService) {
+    public CompanyService(CompanyRepository companyRepository, CompanyAccessRepository companyAccessRepository, UserService userService, SponsorshipPackageService sponsorshipPackageService) {
         this.companyRepository = companyRepository;
         this.companyAccessRepository = companyAccessRepository;
         this.userService = userService;
+        this.sponsorshipPackageService = sponsorshipPackageService;
     }
 
     public CompanyListResponse getAllCompanies() {
@@ -41,7 +44,6 @@ public class CompanyService {
                 .count(companies.size())
                 .build();
     }
-
 
     public Company getCompanyById(UUID companyId) {
         Company company = companyRepository.findById(companyId).orElse(null);
@@ -111,6 +113,15 @@ public class CompanyService {
         Company updatedCompany = ModelUtils.copyCompanyNonNullProperties(company, changeCompanyDetailsRequest);
 
         return companyRepository.save(updatedCompany);
+    }
+
+    public Company setSponsorshipPackage(UUID companyId, UUID sponsorshipPackageId) {
+        Company company = getCompanyById(companyId);
+        SponsorshipPackage sponsorshipPackage = sponsorshipPackageService.getSponsorshipPackageById(sponsorshipPackageId);
+
+        company.setSponsorshipPackage(sponsorshipPackage);
+
+        return companyRepository.save(company);
     }
 
 }

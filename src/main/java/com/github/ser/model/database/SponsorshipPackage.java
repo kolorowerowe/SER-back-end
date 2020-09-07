@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -23,11 +24,11 @@ public class SponsorshipPackage {
     @GeneratedValue
     private UUID id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<SponsorshipPackageTranslation> translations;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<SponsorshipPackageTranslation> translations;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Price> prices;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Price> prices;
 
     private Double standSize;
 

@@ -10,6 +10,7 @@ import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
+import com.github.ser.repository.SponsorshipPackageRepository;
 import com.github.ser.repository.UserRepository;
 import com.github.ser.util.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +48,12 @@ class CompanyServiceTest {
     private UserService userService;
 
     @Autowired
+    private SponsorshipPackageRepository sponsorshipPackageRepository;
+
+    @Mock
+    private SponsorshipPackageService sponsorshipPackageService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Mock
@@ -68,11 +75,12 @@ class CompanyServiceTest {
         initMocks(this);
 
         user = populateUserDatabase(userRepository).get(2);
-
-        companyUuid = populateCompanyRepository(companyRepository, user).get(0);
+        companyUuid = populateCompanyRepository(companyRepository, sponsorshipPackageRepository, user).get(0);
 
         userService = new UserService(userRepository, passwordEncoder, verificationCodeService, jwtTokenUtil, emailService);
-        companyService = new CompanyService(companyRepository, companyAccessRepository, userService);
+        sponsorshipPackageService = new SponsorshipPackageService(sponsorshipPackageRepository);
+
+        companyService = new CompanyService(companyRepository, companyAccessRepository, userService, sponsorshipPackageService);
     }
 
     @Test
@@ -94,7 +102,8 @@ class CompanyServiceTest {
 
         assertAll(
                 () -> assertNotNull(company),
-                () -> assertEquals("Galileo", company.getName())
+                () -> assertEquals("Galileo", company.getName()),
+                () -> assertEquals("Sponsor główny", company.getSponsorshipPackage().getTranslations().stream().findFirst().get().getName())
         );
     }
 

@@ -1,15 +1,15 @@
 package com.github.ser.testutils;
 
 import com.github.ser.enums.Role;
-import com.github.ser.model.database.Address;
-import com.github.ser.model.database.Company;
-import com.github.ser.model.database.User;
-import com.github.ser.model.database.VerificationCode;
+import com.github.ser.model.database.*;
 import com.github.ser.repository.CompanyRepository;
+import com.github.ser.repository.SponsorshipPackageRepository;
 import com.github.ser.repository.UserRepository;
 import com.github.ser.repository.VerificationCodeRepository;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,7 +62,7 @@ public class PopulateDatabase {
 
     }
 
-    public static List<UUID> populateCompanyRepository(CompanyRepository companyRepository, User user) {
+    public static List<UUID> populateCompanyRepository(CompanyRepository companyRepository, SponsorshipPackageRepository sponsorshipPackageRepository, User user) {
         companyRepository.deleteAll();
 
         Company company1 = Company.builder()
@@ -88,10 +88,29 @@ public class PopulateDatabase {
                 .build());
 
 
+        SponsorshipPackage sponsorshipPackage1 = SponsorshipPackage.builder()
+                .translations(Collections.singleton(SponsorshipPackageTranslation.builder()
+                        .languageCode("pl")
+                        .name("Sponsor główny")
+                        .description("Opis głównego")
+                        .build()))
+                .prices(Collections.singleton(Price.builder()
+                        .currency("PLN")
+                        .value(new BigDecimal(1000))
+                        .build()))
+                .isAvailable(true)
+                .companies(Collections.singletonList(company1))
+                .build();
+
+        sponsorshipPackageRepository.save(sponsorshipPackage1);
+
+        company1.setSponsorshipPackage(sponsorshipPackage1);
+
         Company savedCompany1 = companyRepository.save(company1);
         Company savedCompany2 = companyRepository.save(company2);
 
         return Arrays.asList(savedCompany1.getId(), savedCompany2.getId());
-
     }
+
+
 }

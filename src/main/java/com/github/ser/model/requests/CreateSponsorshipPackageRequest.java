@@ -4,7 +4,7 @@ import com.github.ser.model.database.Price;
 import com.github.ser.model.database.SponsorshipPackageTranslation;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class CreateSponsorshipPackageRequest {
 
-    private List<SponsorshipPackageTranslation> translations;
-    private List<Price> prices;
+    private Set<SponsorshipPackageTranslation> translations;
+    private Set<Price> prices;
     private Double standSize;
 
 }
