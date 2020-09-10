@@ -11,6 +11,4 @@ import java.util.List;
 public class UserListResponse {
     private List<User> users;
     private int count;
-    private String error;
-
 }

@@ -38,6 +38,11 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
     }
 
+    @GetMapping("/check-token")
+    public ResponseEntity<Void> checkToken() {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
         log.info("Getting user by id: " + userId);

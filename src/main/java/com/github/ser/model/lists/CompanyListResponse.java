@@ -11,6 +11,4 @@ import java.util.List;
 public class CompanyListResponse {
     private List<Company> companyList;
     private int count;
-    private String error;
-
 }

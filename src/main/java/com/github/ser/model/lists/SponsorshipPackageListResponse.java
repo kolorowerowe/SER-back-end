@@ -11,6 +11,4 @@ import java.util.List;
 public class SponsorshipPackageListResponse {
     private List<SponsorshipPackage> sponsorshipPackageList;
     private int count;
-    private String error;
-
 }
