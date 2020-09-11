@@ -30,5 +30,4 @@ public class DeadlineController {
         return new ResponseEntity<>(deadlineService.setAllDeadlines(deadlineListResponse), HttpStatus.OK);
     }
 
-
 }

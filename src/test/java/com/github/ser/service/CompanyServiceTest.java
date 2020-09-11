@@ -8,10 +8,8 @@ import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.AddressRequest;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
-import com.github.ser.repository.CompanyAccessRepository;
-import com.github.ser.repository.CompanyRepository;
-import com.github.ser.repository.SponsorshipPackageRepository;
-import com.github.ser.repository.UserRepository;
+import com.github.ser.model.response.CompanyResponse;
+import com.github.ser.repository.*;
 import com.github.ser.util.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,6 +52,12 @@ class CompanyServiceTest {
     private SponsorshipPackageService sponsorshipPackageService;
 
     @Autowired
+    private DeadlineRepository deadlineRepository;
+
+    @Mock
+    private DeadlineService deadlineService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Mock
@@ -79,8 +83,9 @@ class CompanyServiceTest {
 
         userService = new UserService(userRepository, passwordEncoder, verificationCodeService, jwtTokenUtil, emailService);
         sponsorshipPackageService = new SponsorshipPackageService(sponsorshipPackageRepository);
+        deadlineService = new DeadlineService(deadlineRepository);
 
-        companyService = new CompanyService(companyRepository, companyAccessRepository, userService, sponsorshipPackageService);
+        companyService = new CompanyService(companyRepository, companyAccessRepository, userService, sponsorshipPackageService, deadlineService);
     }
 
     @Test
@@ -117,7 +122,7 @@ class CompanyServiceTest {
         assertAll(
                 () -> assertNotNull(companyListResponse),
                 () -> assertEquals(2, companyListResponse.getCount()),
-                () -> assertEquals("Galileo", companyListResponse.getCompanyList().get(0).getName())
+                () -> assertEquals("Galileo", companyListResponse.getCompanyList().get(0))
         );
     }
 
@@ -138,12 +143,12 @@ class CompanyServiceTest {
                         .build())
                 .build();
 
-        Company company = companyService.createNewCompany(createCompanyRequest);
+        CompanyResponse company = companyService.createNewCompany(createCompanyRequest);
         User userWithCompanyAccess = userService.getUserById(user.getId());
 
         assertAll(
                 () -> assertEquals("Zeus", company.getName()),
-                () -> assertEquals(user.getId(), company.getPrimaryUserId()),
+                () -> assertEquals(user.getId(), company.getPrimaryUser().getId()),
                 () -> assertEquals("Kraków", company.getAddress().getCity()),
                 () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyId().equals(company.getId())))
         );
@@ -174,7 +179,7 @@ class CompanyServiceTest {
                         .build())
                 .build();
 
-        Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+        CompanyResponse updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
 
         assertAll(
                 () -> assertEquals("+5678", updatedCompany.getContactPhone()),
@@ -195,7 +200,7 @@ class CompanyServiceTest {
                         .build())
                 .build();
 
-        Company updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+        CompanyResponse updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
 
         assertAll(
                 () -> assertEquals("+5678", updatedCompany.getContactPhone()),

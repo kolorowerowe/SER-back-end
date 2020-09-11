@@ -131,6 +131,7 @@ class UserServiceTest {
 
         userService.deleteUserById(firstUser.getId());
 
+
         assertThrows(NoUserForUuidException.class, () -> userService.getUserById(firstUser.getId()));
 
     }

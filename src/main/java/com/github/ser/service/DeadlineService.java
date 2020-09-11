@@ -1,7 +1,10 @@
 package com.github.ser.service;
 
 import com.github.ser.exception.badRequest.DeadlinesNotInitializedException;
+import com.github.ser.model.database.Company;
 import com.github.ser.model.database.Deadline;
+import com.github.ser.model.dto.CompanyDeadlineStatusDTO;
+import com.github.ser.model.lists.CompanyDeadlineStatusesDTO;
 import com.github.ser.model.lists.DeadlineListResponse;
 import com.github.ser.repository.DeadlineRepository;
 import com.github.ser.util.DeadlineUtils;
@@ -10,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.github.ser.model.dto.CompanyDeadlineStatusDTO.getCompanyDeadlineStatusDTO;
 
 @Service
 @Log4j2
@@ -47,4 +53,17 @@ public class DeadlineService {
                 .count(savedDeadlines.size())
                 .build();
     }
+
+    public CompanyDeadlineStatusesDTO getDeadlineStatusForCompany(Company company) {
+        List<Deadline> deadlines = getAllDeadlines().getDeadlines();
+
+        List<CompanyDeadlineStatusDTO> companyDeadlineStatusList = deadlines.stream()
+                .map(deadline -> getCompanyDeadlineStatusDTO(deadline, company)).collect(Collectors.toList());
+
+        return CompanyDeadlineStatusesDTO.builder()
+                .companyDeadlineStatuses(companyDeadlineStatusList)
+                .count(companyDeadlineStatusList.size())
+                .build();
+    }
+
 }

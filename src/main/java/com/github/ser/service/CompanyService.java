@@ -1,13 +1,12 @@
 package com.github.ser.service;
 
 import com.github.ser.exception.badRequest.NoCompanyForUuidException;
-import com.github.ser.model.database.Address;
-import com.github.ser.model.database.Company;
-import com.github.ser.model.database.CompanyAccess;
-import com.github.ser.model.database.SponsorshipPackage;
+import com.github.ser.model.database.*;
+import com.github.ser.model.lists.CompanyDeadlineStatusesDTO;
 import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
+import com.github.ser.model.response.CompanyResponse;
 import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
 import com.github.ser.util.ModelUtils;
@@ -28,21 +27,28 @@ public class CompanyService {
     private final CompanyAccessRepository companyAccessRepository;
     private final UserService userService;
     private final SponsorshipPackageService sponsorshipPackageService;
+    private final DeadlineService deadlineService;
 
-    public CompanyService(CompanyRepository companyRepository, CompanyAccessRepository companyAccessRepository, UserService userService, SponsorshipPackageService sponsorshipPackageService) {
+    public CompanyService(CompanyRepository companyRepository, CompanyAccessRepository companyAccessRepository, UserService userService, SponsorshipPackageService sponsorshipPackageService, DeadlineService deadlineService) {
         this.companyRepository = companyRepository;
         this.companyAccessRepository = companyAccessRepository;
         this.userService = userService;
         this.sponsorshipPackageService = sponsorshipPackageService;
+        this.deadlineService = deadlineService;
     }
 
     public CompanyListResponse getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
 
+        List<CompanyResponse> companyResponseList = companies.stream()
+                .map(this::getCompanyResponse)
+                .collect(Collectors.toList());
+
         return CompanyListResponse.builder()
-                .companyList(companies)
-                .count(companies.size())
+                .companyList(companyResponseList)
+                .count(companyResponseList.size())
                 .build();
+
     }
 
     public Company getCompanyById(UUID companyId) {
@@ -54,12 +60,28 @@ public class CompanyService {
         return company;
     }
 
+    public CompanyResponse getCompanyResponseById(UUID companyId) {
+        Company company = getCompanyById(companyId);
+        return getCompanyResponse(company);
+    }
+
+    private CompanyResponse getCompanyResponse(Company company) {
+        User primaryUser = userService.getUserById(company.getPrimaryUserId());
+        CompanyDeadlineStatusesDTO companyDeadlineStatuses = deadlineService.getDeadlineStatusForCompany(company);
+
+        return new CompanyResponse(
+                company,
+                primaryUser,
+                companyDeadlineStatuses
+        );
+    }
+
     public CompanyListResponse getCompaniesForUser(UUID userId) {
 
         List<CompanyAccess> companyAccesses = userService.getUserById(userId).getCompanyAccessList();
-        List<Company> companies = companyAccesses
+        List<CompanyResponse> companies = companyAccesses
                 .stream()
-                .map(companyAccess -> getCompanyById(companyAccess.getCompanyId()))
+                .map(companyAccess -> getCompanyResponseById(companyAccess.getCompanyId()))
                 .collect(Collectors.toList());
 
         return CompanyListResponse.builder()
@@ -69,7 +91,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public Company createNewCompany(CreateCompanyRequest createCompanyRequest) {
+    public CompanyResponse createNewCompany(CreateCompanyRequest createCompanyRequest) {
 
         Company company = Company.builder()
                 .name(createCompanyRequest.getName())
@@ -98,7 +120,7 @@ public class CompanyService {
                 savedCompany.getName()
         );
 
-        return savedCompany;
+        return getCompanyResponse(savedCompany);
     }
 
     @Transactional
@@ -107,21 +129,23 @@ public class CompanyService {
         companyRepository.deleteById(companyId);
     }
 
-    public Company changeCompanyDetails(UUID companyId, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
+    public CompanyResponse changeCompanyDetails(UUID companyId, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
         Company company = getCompanyById(companyId);
 
         Company updatedCompany = ModelUtils.copyCompanyNonNullProperties(company, changeCompanyDetailsRequest);
 
-        return companyRepository.save(updatedCompany);
+        Company savedCompany = companyRepository.save(updatedCompany);
+        return getCompanyResponse(savedCompany);
     }
 
-    public Company setSponsorshipPackage(UUID companyId, UUID sponsorshipPackageId) {
+    public CompanyResponse setSponsorshipPackage(UUID companyId, UUID sponsorshipPackageId) {
         Company company = getCompanyById(companyId);
         SponsorshipPackage sponsorshipPackage = sponsorshipPackageService.getSponsorshipPackageById(sponsorshipPackageId);
 
         company.setSponsorshipPackage(sponsorshipPackage);
 
-        return companyRepository.save(company);
+        Company savedCompany = companyRepository.save(company);
+        return getCompanyResponse(savedCompany);
     }
 
 }
