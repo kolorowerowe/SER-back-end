@@ -74,7 +74,7 @@ public class UserService {
     }
 
     public void sentVerificationCode(String email) {
-
+        //TODO: verify if email is in database
         String code = verificationCodeService.generateCode(email);
 
         MailMessage verificationMessage = MailMessage.getVerificationMailMessage(email, code);

@@ -62,7 +62,7 @@ public class CompanyController {
     }
 
     @PatchMapping("/{companyId}/sponsorship-package/{sponsorshipPackageId}")
-    public ResponseEntity<CompanyResponse> changeCompanyDetails(@PathVariable UUID companyId, @PathVariable UUID sponsorshipPackageId){
+    public ResponseEntity<CompanyResponse> setSponsorshipPackage(@PathVariable UUID companyId, @PathVariable UUID sponsorshipPackageId){
         log.info("Setting sponsorship package: " + sponsorshipPackageId + " for company: " + companyId);
         return new ResponseEntity<>(companyService.setSponsorshipPackage(companyId, sponsorshipPackageId), HttpStatus.OK);
 

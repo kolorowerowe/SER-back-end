@@ -10,6 +10,7 @@ import com.github.ser.util.ModelUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ public class SponsorshipPackageService {
 
     public SponsorshipPackageListResponse getAllSponsorshipPackages() {
         List<SponsorshipPackage> sponsorshipPackageList = sponsorshipPackageRepository.findAll();
+        sponsorshipPackageList.sort(Comparator.comparing(SponsorshipPackage::getStandSize).reversed());
 
         return SponsorshipPackageListResponse.builder()
                 .sponsorshipPackageList(sponsorshipPackageList)
