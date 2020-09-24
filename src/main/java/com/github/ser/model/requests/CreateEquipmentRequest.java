@@ -10,10 +10,10 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class CreateSponsorshipPackageRequest {
+public class CreateEquipmentRequest {
 
     private Set<Translation> translations;
     private Set<Price> prices;
-    private Double standSize;
+    private Integer maxCountPerCompany;
 
 }

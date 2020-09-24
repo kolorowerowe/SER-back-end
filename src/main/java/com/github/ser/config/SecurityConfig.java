@@ -58,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/company/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
                 .antMatchers("/sponsorship-package/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
                 .antMatchers("/deadline/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
+                .antMatchers("/equipment/**").hasAnyRole("SYSTEM_ADMIN", "ORGANIZER_EDITOR", "ORGANIZER_VIEWER", "COMPANY_EDITOR", "COMPANY_VIEWER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter( new JwtLoginFilter(authenticationManager, jwtTokenUtil, userService))

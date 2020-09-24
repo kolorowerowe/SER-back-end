@@ -1,32 +1,33 @@
 package com.github.ser.model.database;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
+@With
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Table(name = "sponsorship_package_translation")
+@Table(name = "equipment")
 @Entity
-public class SponsorshipPackageTranslation {
+public class Equipment {
 
     @Id
     @Column(name = "id")
     @GeneratedValue
-    @JsonIgnore
     private UUID id;
 
-    private String languageCode;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Translation> translations;
 
-    private String name;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Price> prices;
 
-    @Column(length = 2048)
-    private String description;
+    private Integer maxCountPerCompany;
 
 }

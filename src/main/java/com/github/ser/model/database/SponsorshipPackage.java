@@ -25,7 +25,7 @@ public class SponsorshipPackage {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<SponsorshipPackageTranslation> translations;
+    private Set<Translation> translations;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Price> prices;

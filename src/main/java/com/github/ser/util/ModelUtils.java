@@ -2,9 +2,11 @@ package com.github.ser.util;
 
 import com.github.ser.model.database.Address;
 import com.github.ser.model.database.Company;
+import com.github.ser.model.database.Equipment;
 import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.ChangeSponsorshipPackageRequest;
+import com.github.ser.model.requests.CreateEquipmentRequest;
 
 public class ModelUtils {
 
@@ -76,6 +78,14 @@ public class ModelUtils {
 
 
         return sponsorshipPackage;
+    }
+
+
+    public static Equipment copySponsorshipPackageNonNullProperties(Equipment equipment, CreateEquipmentRequest createEquipmentRequest){
+
+        //TODO: COPY FIELDS!
+
+        return equipment;
     }
 
     private static boolean notEmpty(String field){

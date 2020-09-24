@@ -89,7 +89,7 @@ public class PopulateDatabase {
 
 
         SponsorshipPackage sponsorshipPackage1 = SponsorshipPackage.builder()
-                .translations(Collections.singleton(SponsorshipPackageTranslation.builder()
+                .translations(Collections.singleton(Translation.builder()
                         .languageCode("pl")
                         .name("Sponsor główny")
                         .description("Opis głównego")
