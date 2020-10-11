@@ -7,6 +7,7 @@ import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.model.response.CompanyResponse;
+import com.github.ser.model.response.SponsorshipPackageResponse;
 import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
 import com.github.ser.util.ModelUtils;
@@ -55,7 +56,7 @@ public class CompanyService {
         Company company = companyRepository.findById(companyId).orElse(null);
         if (company == null) {
             log.debug("Company: " + companyId + " does not exist");
-            throw new NoCompanyForUuidException("No user for provided email");
+            throw new NoCompanyForUuidException("No company for provided id: " + companyId);
         }
         return company;
     }
@@ -68,10 +69,15 @@ public class CompanyService {
     private CompanyResponse getCompanyResponse(Company company) {
         User primaryUser = userService.getUserById(company.getPrimaryUserId());
         CompanyDeadlineStatusesDTO companyDeadlineStatuses = deadlineService.getDeadlineStatusForCompany(company);
+        SponsorshipPackageResponse sponsorshipPackageResponse = null;
+        if (company.getSponsorshipPackage() != null) {
+            sponsorshipPackageResponse = sponsorshipPackageService.getSponsorshipPackageResponseById(company.getSponsorshipPackage().getId());
+        }
 
         return new CompanyResponse(
                 company,
                 primaryUser,
+                sponsorshipPackageResponse,
                 companyDeadlineStatuses
         );
     }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.ser.enums.Role;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,8 +27,11 @@ import static com.github.ser.util.DateTimeUtils.DATE_TIME_FORMAT;
 public class User {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @NonNull

@@ -48,7 +48,7 @@ public class EquipmentController {
     }
 
     @PatchMapping("/{equipmentId}")
-    public ResponseEntity<Equipment> changeEquipment(@PathVariable UUID equipmentId, @RequestBody CreateEquipmentRequest changeEquipmentRequest) {
+    public ResponseEntity<Equipment> changeEquipmentDetails(@PathVariable UUID equipmentId, @RequestBody CreateEquipmentRequest changeEquipmentRequest) {
         log.info("Changing equipment details: " + equipmentId);
         return new ResponseEntity<>(equipmentService.changeEquipmentDetails(equipmentId, changeEquipmentRequest), HttpStatus.OK);
     }

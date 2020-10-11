@@ -3,6 +3,7 @@ package com.github.ser.service;
 import com.github.ser.SerApplication;
 import com.github.ser.exception.badRequest.NoCompanyForUuidException;
 import com.github.ser.model.database.Company;
+import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.AddressRequest;
@@ -10,7 +11,9 @@ import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.model.response.CompanyResponse;
 import com.github.ser.repository.*;
+import com.github.ser.testutils.PopulateDatabase;
 import com.github.ser.util.JwtTokenUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.UUID;
 
-import static com.github.ser.testutils.PopulateDatabase.populateCompanyRepository;
+import static com.github.ser.testutils.PopulateDatabase.populateSponsorshipPackageRepository;
 import static com.github.ser.testutils.PopulateDatabase.populateUserDatabase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -48,17 +52,20 @@ class CompanyServiceTest {
     @Autowired
     private SponsorshipPackageRepository sponsorshipPackageRepository;
 
-    @Mock
-    private SponsorshipPackageService sponsorshipPackageService;
-
     @Autowired
     private DeadlineRepository deadlineRepository;
 
-    @Mock
-    private DeadlineService deadlineService;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+
+    @Autowired
+    private SPEquipmentRepository spEquipmentRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PopulateDatabase populateDatabase;
 
     @Mock
     private VerificationCodeService verificationCodeService;
@@ -71,28 +78,48 @@ class CompanyServiceTest {
 
     private CompanyService companyService;
 
-    private UUID companyUuid;
+    private UUID company1Id;
+    private UUID company2Id;
+    private UUID sponsorshipPackageId;
     private User user;
 
     @BeforeEach
     void setup() {
         initMocks(this);
-
         user = populateUserDatabase(userRepository).get(2);
-        companyUuid = populateCompanyRepository(companyRepository, sponsorshipPackageRepository, user).get(0);
+        SponsorshipPackage sponsorshipPackage = populateSponsorshipPackageRepository(sponsorshipPackageRepository);
+        List<Company> companyList = populateDatabase.populateCompanyRepository(companyRepository, sponsorshipPackage, companyAccessRepository, user);
+
+        company1Id = companyList.get(0).getId();
+        company2Id = companyList.get(1).getId();
+        sponsorshipPackageId = sponsorshipPackage.getId();
+
+        populateDatabase.populateEquipmentRepository(spEquipmentRepository, equipmentRepository, sponsorshipPackageId).get(0);
 
         userService = new UserService(userRepository, passwordEncoder, verificationCodeService, jwtTokenUtil, emailService);
-        sponsorshipPackageService = new SponsorshipPackageService(sponsorshipPackageRepository);
-        deadlineService = new DeadlineService(deadlineRepository);
+        EquipmentService equipmentService = new EquipmentService(equipmentRepository);
+        SponsorshipPackageService sponsorshipPackageService = new SponsorshipPackageService(sponsorshipPackageRepository, spEquipmentRepository, equipmentService);
+        DeadlineService deadlineService = new DeadlineService(deadlineRepository);
 
         companyService = new CompanyService(companyRepository, companyAccessRepository, userService, sponsorshipPackageService, deadlineService);
+    }
+
+    @AfterEach
+    void clear() {
+        companyRepository.deleteAll();
+        userRepository.deleteAll();
+        companyAccessRepository.deleteAll();
+        sponsorshipPackageRepository.deleteAll();
+
+        spEquipmentRepository.deleteAll();
+        equipmentRepository.deleteAll();
     }
 
     @Test
     @DisplayName("Get company by id - return NoCompanyForUuidException")
     void getCompanyById_throwNoCompanyUuidException() {
 
-        UUID notExistingCompanyUuid = UUID.fromString("00000000-9999-9999-9999-000000000000");
+        UUID notExistingCompanyUuid = UUID.randomUUID();
 
         assertThrows(NoCompanyForUuidException.class, () -> companyService.getCompanyById(notExistingCompanyUuid));
     }
@@ -103,12 +130,26 @@ class CompanyServiceTest {
     void getCompanyById_returnCompany() {
 
 
-        Company company = companyService.getCompanyById(companyUuid);
+        Company company = companyService.getCompanyById(company1Id);
 
         assertAll(
                 () -> assertNotNull(company),
                 () -> assertEquals("Galileo", company.getName()),
                 () -> assertEquals("Sponsor główny", company.getSponsorshipPackage().getTranslations().stream().findFirst().get().getName())
+        );
+    }
+
+    @Test
+    @DisplayName("Get company response by id - return CompanyResponse")
+    void getCompanyResponseById_returnCompany() {
+
+
+        CompanyResponse companyResponse = companyService.getCompanyResponseById(company1Id);
+
+        assertAll(
+                () -> assertNotNull(companyResponse),
+                () -> assertEquals("Galileo", companyResponse.getName()),
+                () -> assertEquals("Sponsor główny", companyResponse.getSponsorshipPackage().getTranslations().stream().findFirst().get().getName())
         );
     }
 
@@ -122,7 +163,21 @@ class CompanyServiceTest {
         assertAll(
                 () -> assertNotNull(companyListResponse),
                 () -> assertEquals(2, companyListResponse.getCount()),
-                () -> assertEquals("Galileo", companyListResponse.getCompanyList().get(0))
+                () -> assertEquals("Galileo", companyListResponse.getCompanyList().get(0).getName())
+        );
+    }
+
+    @Test
+    @DisplayName("Get all companies for user - return CompanyListResponse")
+    void getAllCompaniesForUser_returnCompanyListResponse() {
+
+
+        CompanyListResponse companyListResponse = companyService.getCompaniesForUser(user.getId());
+
+        assertAll(
+                () -> assertNotNull(companyListResponse),
+                () -> assertEquals(2, companyListResponse.getCount()),
+                () -> assertEquals("Galileo", companyListResponse.getCompanyList().get(0).getName())
         );
     }
 
@@ -159,11 +214,11 @@ class CompanyServiceTest {
     @DisplayName("Delete company by id")
     void deleteCompanyById() {
 
-        assertDoesNotThrow(() -> companyService.getCompanyById(companyUuid));
+        assertDoesNotThrow(() -> companyService.getCompanyById(company1Id));
 
-        companyService.deleteCompanyById(companyUuid);
+        companyService.deleteCompanyById(company1Id);
 
-        assertThrows(NoCompanyForUuidException.class, () -> companyService.getCompanyById(companyUuid));
+        assertThrows(NoCompanyForUuidException.class, () -> companyService.getCompanyById(company1Id));
 
     }
 
@@ -179,7 +234,7 @@ class CompanyServiceTest {
                         .build())
                 .build();
 
-        CompanyResponse updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+        CompanyResponse updatedCompany = companyService.changeCompanyDetails(company1Id, changeCompanyDetailsRequest);
 
         assertAll(
                 () -> assertEquals("+5678", updatedCompany.getContactPhone()),
@@ -200,11 +255,32 @@ class CompanyServiceTest {
                         .build())
                 .build();
 
-        CompanyResponse updatedCompany = companyService.changeCompanyDetails(companyUuid, changeCompanyDetailsRequest);
+        CompanyResponse updatedCompany = companyService.changeCompanyDetails(company1Id, changeCompanyDetailsRequest);
 
         assertAll(
                 () -> assertEquals("+5678", updatedCompany.getContactPhone()),
                 () -> assertEquals("8888", updatedCompany.getTaxId())
+        );
+
+    }
+
+    @Test
+    @DisplayName("Set sponsorship package - success")
+    void setSponsorshipPackage_success() {
+
+        CompanyResponse company = companyService.getCompanyResponseById(company2Id);
+
+        assertAll(
+                () -> assertNotNull(company),
+                () -> assertNull(company.getSponsorshipPackage())
+        );
+
+        CompanyResponse updatedCompany = companyService.setSponsorshipPackage(company2Id, sponsorshipPackageId);
+
+        assertAll(
+                () -> assertNotNull(updatedCompany),
+                () -> assertNotNull(updatedCompany.getSponsorshipPackage()),
+                () -> assertEquals(sponsorshipPackageId, updatedCompany.getSponsorshipPackage().getId())
         );
 
     }

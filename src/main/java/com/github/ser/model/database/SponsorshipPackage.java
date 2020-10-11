@@ -3,6 +3,7 @@ package com.github.ser.model.database;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,8 +21,11 @@ import java.util.UUID;
 public class SponsorshipPackage {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -35,6 +39,7 @@ public class SponsorshipPackage {
     private Boolean isAvailable;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.MERGE)
+    @ToString.Exclude
     private List<Company> companies;
 }

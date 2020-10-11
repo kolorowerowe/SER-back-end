@@ -2,52 +2,52 @@ package com.github.ser.testutils;
 
 import com.github.ser.enums.Role;
 import com.github.ser.model.database.*;
-import com.github.ser.repository.CompanyRepository;
-import com.github.ser.repository.SponsorshipPackageRepository;
-import com.github.ser.repository.UserRepository;
-import com.github.ser.repository.VerificationCodeRepository;
+import com.github.ser.repository.*;
+import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Component
 public class PopulateDatabase {
+
 
     public static List<User> populateUserDatabase(UserRepository userRepository) {
         userRepository.deleteAll();
 
         User user1 = User.builder()
-                .id(UUID.fromString("00000000-0000-0000-0000-000000000000"))
                 .email("dominik@ser.pl")
                 .fullName("Dominik K")
                 .isActivated(true)
                 .role(Role.SYSTEM_ADMIN)
+                .companyAccessList(Collections.emptyList())
                 .build();
 
         User user2 = User.builder()
-                .id(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                 .email("rekin@ser.pl")
                 .fullName("Rekin rekin")
                 .isActivated(false)
                 .role(Role.COMPANY_EDITOR)
+                .companyAccessList(Collections.emptyList())
                 .build();
 
+
         User user3 = User.builder()
-                .id(UUID.fromString("00000000-0000-0000-0000-000000000002"))
                 .email("lama@ser.pl")
                 .fullName("Lama lama")
                 .isActivated(true)
                 .role(Role.COMPANY_EDITOR)
+                .companyAccessList(Collections.emptyList())
                 .build();
+
+
 
         User savedUser1 = userRepository.save(user1);
         User savedUser2 = userRepository.save(user2);
         User savedUser3 = userRepository.save(user3);
 
         return Arrays.asList(savedUser1, savedUser2, savedUser3);
-
     }
 
     public static void populateVerificationCodeRepository(VerificationCodeRepository verificationCodeRepository) {
@@ -62,8 +62,36 @@ public class PopulateDatabase {
 
     }
 
-    public static List<UUID> populateCompanyRepository(CompanyRepository companyRepository, SponsorshipPackageRepository sponsorshipPackageRepository, User user) {
-        companyRepository.deleteAll();
+    public static void populateDeadlineRepository(DeadlineRepository deadlineRepository) {
+        deadlineRepository.deleteAll();
+//
+//        deadlineRepository.save(Deadline.builder()
+//                .activity(DeadlineActivity.CHOOSE_ADDITIONAL_EQUIPMENT)
+//                .build())
+    }
+
+    public static SponsorshipPackage populateSponsorshipPackageRepository(SponsorshipPackageRepository sponsorshipPackageRepository){
+
+        SponsorshipPackage sponsorshipPackage1 = SponsorshipPackage.builder()
+                .translations(Collections.singleton(Translation.builder()
+                        .languageCode("pl")
+                        .name("Sponsor główny")
+                        .description("Opis głównego")
+                        .build()))
+                .prices(Collections.singleton(Price.builder()
+                        .currency("PLN")
+                        .value(new BigDecimal(1000))
+                        .build()))
+                .standSize(12.0)
+                .isAvailable(true)
+                .build();
+
+        return sponsorshipPackageRepository.save(sponsorshipPackage1);
+
+    }
+
+    @Transactional
+    public List<Company> populateCompanyRepository(CompanyRepository companyRepository, SponsorshipPackage sponsorshipPackage, CompanyAccessRepository companyAccessRepository, User user) {
 
         Company company1 = Company.builder()
                 .name("Galileo")
@@ -88,28 +116,69 @@ public class PopulateDatabase {
                 .build());
 
 
-        SponsorshipPackage sponsorshipPackage1 = SponsorshipPackage.builder()
-                .translations(Collections.singleton(Translation.builder()
-                        .languageCode("pl")
-                        .name("Sponsor główny")
-                        .description("Opis głównego")
-                        .build()))
-                .prices(Collections.singleton(Price.builder()
-                        .currency("PLN")
-                        .value(new BigDecimal(1000))
-                        .build()))
-                .isAvailable(true)
-                .companies(Collections.singletonList(company1))
-                .build();
 
-        sponsorshipPackageRepository.save(sponsorshipPackage1);
-
-        company1.setSponsorshipPackage(sponsorshipPackage1);
+        company1.setSponsorshipPackage(sponsorshipPackage);
 
         Company savedCompany1 = companyRepository.save(company1);
         Company savedCompany2 = companyRepository.save(company2);
 
-        return Arrays.asList(savedCompany1.getId(), savedCompany2.getId());
+
+        companyAccessRepository.save(CompanyAccess.builder()
+                .companyId(company1.getId())
+                .companyName("Company1")
+                .user(user)
+                .build());
+
+        companyAccessRepository.save(CompanyAccess.builder()
+                .companyId(company2.getId())
+                .companyName("Company2")
+                .user(user)
+                .build());
+
+
+        return Arrays.asList(savedCompany1, savedCompany2);
+    }
+
+
+    @Transactional
+    public List<Equipment> populateEquipmentRepository(SPEquipmentRepository spEquipmentRepository, EquipmentRepository equipmentRepository, UUID sponsorshipPackageId) {
+
+
+        Equipment tv = equipmentRepository.save(Equipment.builder()
+                .translations(Set.of(Translation.builder()
+                        .languageCode("pl")
+                        .name("Telewizor")
+                        .description("40 cali")
+                        .build()))
+                .prices(Set.of(Price.builder()
+                        .value(BigDecimal.valueOf(100))
+                        .currency("PLN")
+                        .build()))
+                .maxCountPerCompany(2)
+                .build());
+
+
+        Equipment chair = equipmentRepository.save(Equipment.builder()
+                .translations(Set.of(Translation.builder()
+                        .languageCode("pl")
+                        .name("Krzesło")
+                        .description("do siedzenia")
+                        .build()))
+                .prices(Set.of(Price.builder()
+                        .value(BigDecimal.valueOf(25))
+                        .currency("PLN")
+                        .build()))
+                .maxCountPerCompany(4)
+                .build());
+
+        spEquipmentRepository.save(SPEquipment.builder()
+                .equipment(tv)
+                .sponsorshipPackageId(sponsorshipPackageId)
+                .count(2)
+                .build()
+        );
+
+        return Arrays.asList(tv, chair);
     }
 
 

@@ -10,18 +10,18 @@ import com.github.ser.model.requests.CreateEquipmentRequest;
 
 public class ModelUtils {
 
-    private ModelUtils(){
+    private ModelUtils() {
         // private constructor
     }
 
-    public static Company copyCompanyNonNullProperties(Company company, ChangeCompanyDetailsRequest changeCompanyDetailsRequest){
+    public static Company copyCompanyNonNullProperties(Company company, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
 
         String newContactPhone = changeCompanyDetailsRequest.getContactPhone();
         if (notEmpty(newContactPhone)) {
             company.setContactPhone(newContactPhone);
         }
 
-        String newTaxId= changeCompanyDetailsRequest.getTaxId();
+        String newTaxId = changeCompanyDetailsRequest.getTaxId();
         if (notEmpty(newTaxId)) {
             company.setTaxId(newTaxId);
         }
@@ -58,13 +58,17 @@ public class ModelUtils {
         return company;
     }
 
-    public static SponsorshipPackage copySponsorshipPackageNonNullProperties(SponsorshipPackage sponsorshipPackage, ChangeSponsorshipPackageRequest changeSponsorshipPackageRequest){
+    public static SponsorshipPackage copySponsorshipPackageNonNullProperties(SponsorshipPackage sponsorshipPackage, ChangeSponsorshipPackageRequest changeSponsorshipPackageRequest) {
 
-        sponsorshipPackage.getPrices().clear();
-        sponsorshipPackage.getPrices().addAll(changeSponsorshipPackageRequest.getPrices());
+        if (changeSponsorshipPackageRequest.getPrices() != null) {
+            sponsorshipPackage.getPrices().clear();
+            sponsorshipPackage.getPrices().addAll(changeSponsorshipPackageRequest.getPrices());
+        }
 
-        sponsorshipPackage.getTranslations().clear();
-        sponsorshipPackage.getTranslations().addAll(changeSponsorshipPackageRequest.getTranslations());
+        if (changeSponsorshipPackageRequest.getTranslations() != null) {
+            sponsorshipPackage.getTranslations().clear();
+            sponsorshipPackage.getTranslations().addAll(changeSponsorshipPackageRequest.getTranslations());
+        }
 
         Double newStandSize = changeSponsorshipPackageRequest.getStandSize();
         if (notEmpty(newStandSize)) {
@@ -81,20 +85,36 @@ public class ModelUtils {
     }
 
 
-    public static Equipment copySponsorshipPackageNonNullProperties(Equipment equipment, CreateEquipmentRequest createEquipmentRequest){
+    public static Equipment copyEquipmentNonNullProperties(Equipment equipment, CreateEquipmentRequest createEquipmentRequest) {
 
-        //TODO: COPY FIELDS!
+        if (createEquipmentRequest.getPrices() != null) {
+            equipment.getPrices().clear();
+            equipment.getPrices().addAll(createEquipmentRequest.getPrices());
+        }
+        if (createEquipmentRequest.getTranslations() != null) {
+            equipment.getTranslations().clear();
+            equipment.getTranslations().addAll(createEquipmentRequest.getTranslations());
+        }
+        Integer newMaxCountPerCompany = createEquipmentRequest.getMaxCountPerCompany();
+        if (notEmpty(newMaxCountPerCompany)) {
+            equipment.setMaxCountPerCompany(newMaxCountPerCompany);
+        }
 
         return equipment;
     }
 
-    private static boolean notEmpty(String field){
+    private static boolean notEmpty(String field) {
         return (field != null && !field.isEmpty());
     }
-    private static boolean notEmpty(Double field){
+
+    private static boolean notEmpty(Double field) {
         return (field != null);
     }
-    private static boolean notEmpty(Boolean field){
+
+    private static boolean notEmpty(Boolean field) {
+        return (field != null);
+    }
+    private static boolean notEmpty(Integer field) {
         return (field != null);
     }
 }

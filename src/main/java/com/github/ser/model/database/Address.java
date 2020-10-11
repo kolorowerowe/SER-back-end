@@ -1,10 +1,7 @@
 package com.github.ser.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -30,6 +27,7 @@ public class Address {
     private String postalCode;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;

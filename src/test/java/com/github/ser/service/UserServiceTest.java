@@ -69,7 +69,7 @@ class UserServiceTest {
     @DisplayName("Get user by id - return NoUserForUuidException")
     void getUserById_throwNoUserUuidException() {
 
-        UUID notExistingUserUuid = UUID.fromString("00000000-9999-9999-9999-000000000000");
+        UUID notExistingUserUuid = UUID.randomUUID();
 
         assertThrows(NoUserForUuidException.class, () -> userService.getUserById(notExistingUserUuid));
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -23,8 +24,11 @@ import static com.github.ser.util.DateTimeUtils.DATE_TIME_FORMAT;
 public class Company {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     private UUID primaryUserId;
@@ -43,7 +47,7 @@ public class Company {
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsorship_package_id")
     private SponsorshipPackage sponsorshipPackage;
 

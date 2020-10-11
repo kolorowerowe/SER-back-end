@@ -54,7 +54,7 @@ public class EquipmentService {
     public Equipment changeEquipmentDetails(UUID equipmentId, CreateEquipmentRequest createEquipmentRequest) {
         Equipment equipment = getEquipmentById(equipmentId);
 
-        Equipment updatedEquipment = ModelUtils.copySponsorshipPackageNonNullProperties(equipment, createEquipmentRequest);
+        Equipment updatedEquipment = ModelUtils.copyEquipmentNonNullProperties(equipment, createEquipmentRequest);
 
         return equipmentRepository.save(updatedEquipment);
     }
@@ -62,4 +62,6 @@ public class EquipmentService {
     public void deleteEquipment(UUID equipmentId) {
         equipmentRepository.deleteById(equipmentId);
     }
+
+
 }

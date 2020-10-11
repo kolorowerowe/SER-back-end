@@ -1,6 +1,5 @@
 package com.github.ser.service;
 
-import com.github.ser.exception.badRequest.DeadlinesNotInitializedException;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.Deadline;
 import com.github.ser.model.dto.CompanyDeadlineStatusDTO;
@@ -29,9 +28,9 @@ public class DeadlineService {
 
     public DeadlineListResponse getAllDeadlines() {
         List<Deadline> allDeadlines = deadlineRepository.findAll();
-        if (allDeadlines.size() != 5) {
-            throw new DeadlinesNotInitializedException("Deadline list size: " + allDeadlines.size() + ", assuming than deadlines are not initialized");
-        }
+//        if (allDeadlines.size() != 5) {
+//            throw new DeadlinesNotInitializedException("Deadline list size: " + allDeadlines.size() + ", assuming than deadlines are not initialized");
+//        }
 
         allDeadlines.sort(Comparator.comparing(Deadline::getOrderNumber));
 

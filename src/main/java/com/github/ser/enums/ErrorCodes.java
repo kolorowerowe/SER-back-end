@@ -27,6 +27,7 @@ public enum ErrorCodes {
 
     NO_SPONSORSHIP_FOR_PROVIDED_ID(350),
     NO_EQUIPMENT_FOR_PROVIDED_ID(351),
+    NO_SP_EQUIPMENT_FOR_PROVIDED_ID(352),
 
 
     // 4 - admin errors
