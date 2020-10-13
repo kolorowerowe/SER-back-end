@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk14:latest
+FROM adoptopenjdk/openjdk11:latest
 WORKDIR /
 EXPOSE 8080
 ARG JAR_FILE=./target/ser-back-end-0.0.2.jar
