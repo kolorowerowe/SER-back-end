@@ -38,6 +38,9 @@ public class SponsorshipPackage {
 
     private Boolean isAvailable;
 
+    private Integer maxCompanies;
+
+
     @JsonIgnore
     @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.MERGE)
     @ToString.Exclude

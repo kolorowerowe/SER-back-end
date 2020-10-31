@@ -27,5 +27,9 @@ public class SponsorshipPackageResponse {
 
     private Boolean isAvailable;
 
+    private Integer currentCompanies;
+    private Integer maxCompanies;
+
+
     private List<SPEquipment> spEquipmentList;
 }

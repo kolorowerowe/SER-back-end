@@ -17,6 +17,7 @@ import com.github.ser.util.ModelUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -65,7 +66,7 @@ public class SponsorshipPackageService {
                 .findAll()
                 .stream()
                 .map(this::getSponsorshipPackageResponse)
-                .sorted(Comparator.comparing(SponsorshipPackageResponse::getStandSize).reversed())
+                .sorted(Comparator.comparing(SponsorshipPackageResponse::getMaxCompanies))
                 .collect(Collectors.toList());
 
         return SponsorshipPackageListResponse.builder()
@@ -79,7 +80,9 @@ public class SponsorshipPackageService {
                 .translations(createSponsorshipPackageRequest.getTranslations())
                 .prices(createSponsorshipPackageRequest.getPrices())
                 .standSize(createSponsorshipPackageRequest.getStandSize())
+                .maxCompanies(createSponsorshipPackageRequest.getMaxCompanies())
                 .isAvailable(false)
+                .companies(Collections.emptyList())
                 .build();
 
         return getSponsorshipPackageResponse(sponsorshipPackageRepository.save(newSponsorshipPackage));
@@ -141,6 +144,8 @@ public class SponsorshipPackageService {
                 .prices(sponsorshipPackage.getPrices())
                 .translations(sponsorshipPackage.getTranslations())
                 .standSize(sponsorshipPackage.getStandSize())
+                .maxCompanies(sponsorshipPackage.getMaxCompanies())
+                .currentCompanies(sponsorshipPackage.getCompanies().size())
                 .spEquipmentList(getEquipmentsForSponsorshipPackage(sponsorshipPackage.getId()))
                 .build();
     }

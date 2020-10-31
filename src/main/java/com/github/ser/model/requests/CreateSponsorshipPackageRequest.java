@@ -15,5 +15,6 @@ public class CreateSponsorshipPackageRequest {
     private Set<Translation> translations;
     private Set<Price> prices;
     private Double standSize;
+    private Integer maxCompanies;
 
 }

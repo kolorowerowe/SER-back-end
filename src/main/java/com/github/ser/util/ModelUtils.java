@@ -75,6 +75,11 @@ public class ModelUtils {
             sponsorshipPackage.setStandSize(newStandSize);
         }
 
+        Integer newMaxCompanies = changeSponsorshipPackageRequest.getMaxCompanies();
+        if (notEmpty(newMaxCompanies)) {
+            sponsorshipPackage.setMaxCompanies(newMaxCompanies);
+        }
+
         Boolean newIsAvailable = changeSponsorshipPackageRequest.getIsAvailable();
         if (notEmpty(newIsAvailable)) {
             sponsorshipPackage.setIsAvailable(newIsAvailable);
