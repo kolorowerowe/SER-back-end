@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Statistics {
+public class PercentageProgress<T> {
 
-    private UserStatistics userStatistics;
-    private SponsorshipPackageStatistics sponsorshipPackageStatistics;
+    private T object;
+    private Integer currentProgress;
+    private Integer maxProgress;
 }

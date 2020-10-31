@@ -2,10 +2,10 @@ package com.github.ser.service;
 
 import com.github.ser.enums.Role;
 import com.github.ser.model.database.User;
+import com.github.ser.model.lists.SponsorshipPackageListResponse;
 import com.github.ser.model.lists.UserListResponse;
-import com.github.ser.model.statistics.OccurrenceInfo;
-import com.github.ser.model.statistics.Statistics;
-import com.github.ser.model.statistics.UserStatistics;
+import com.github.ser.model.response.SponsorshipPackageResponse;
+import com.github.ser.model.statistics.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,7 @@ public class StatisticsService {
     public Statistics getStatistics() {
         return Statistics.builder()
                 .userStatistics(getUserStatistics())
+                .sponsorshipPackageStatistics(getSponsorshipPackageStatistics())
                 .build();
     }
 
@@ -53,5 +54,25 @@ public class StatisticsService {
                 .allUsersCount(userListResponse.getCount())
                 .roleOccurrenceList(roleOccurrenceList)
                 .build();
+    }
+
+    public SponsorshipPackageStatistics getSponsorshipPackageStatistics() {
+        SponsorshipPackageListResponse sponsorshipPackageListResponse = sponsorshipPackageService.getAllSponsorshipPackages();
+
+        List<PercentageProgress<SponsorshipPackageResponse>> progressList = sponsorshipPackageListResponse.getSponsorshipPackageList()
+                .stream()
+                .sorted(Comparator.comparing(SponsorshipPackageResponse::getMaxCompanies))
+                .map(sponsorshipPackageResponse -> PercentageProgress.<SponsorshipPackageResponse>builder()
+                        .object(sponsorshipPackageResponse)
+                        .currentProgress(sponsorshipPackageResponse.getCurrentCompanies())
+                        .maxProgress(sponsorshipPackageResponse.getMaxCompanies())
+                        .build())
+                .collect(Collectors.toList());
+
+        return SponsorshipPackageStatistics.builder()
+                .allSPCount(sponsorshipPackageListResponse.getCount())
+                .percentageProgressesSP(progressList)
+                .build();
+
     }
 }
