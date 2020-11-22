@@ -33,7 +33,9 @@ public enum ErrorCodes {
 
     // 4 - admin errors
     INVALID_DEADLINES(400),
-    DEADLINES_NOT_INITIALIZED(401);
+    DEADLINES_NOT_INITIALIZED(401),
+    EVENT_CONFIG_NOT_INITIALIZED(402),
+    EVENT_CONFIG_INVALID(403);
 
 
     private final int code;
