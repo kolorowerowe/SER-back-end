@@ -28,6 +28,7 @@ public class Address {
 
     @JsonIgnore
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;

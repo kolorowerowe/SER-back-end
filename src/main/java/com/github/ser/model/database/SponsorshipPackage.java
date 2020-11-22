@@ -3,6 +3,8 @@ package com.github.ser.model.database;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -41,7 +43,8 @@ public class SponsorshipPackage {
 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "sponsorshipPackage", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<Company> companies;
+    private List<Company> companies;
 }

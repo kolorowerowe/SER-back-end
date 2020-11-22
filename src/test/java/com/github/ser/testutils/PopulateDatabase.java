@@ -85,7 +85,7 @@ public class PopulateDatabase {
                 .standSize(12.0)
                 .isAvailable(true)
                 .maxCompanies(2)
-                .companies(Set.of())
+                .companies(Collections.emptyList())
                 .build();
 
         return sponsorshipPackageRepository.save(sponsorshipPackage1);

@@ -79,7 +79,7 @@ public class SponsorshipPackageService {
                 .standSize(createSponsorshipPackageRequest.getStandSize())
                 .maxCompanies(createSponsorshipPackageRequest.getMaxCompanies())
                 .isAvailable(false)
-                .companies(Set.of())
+                .companies(Collections.emptyList())
                 .build();
 
         return getSponsorshipPackageResponse(sponsorshipPackageRepository.save(newSponsorshipPackage));

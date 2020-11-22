@@ -47,7 +47,7 @@ public class Company {
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsorship_package_id", referencedColumnName = "id")
     private SponsorshipPackage sponsorshipPackage;
 
