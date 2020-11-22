@@ -17,10 +17,7 @@ import com.github.ser.util.ModelUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,7 +79,7 @@ public class SponsorshipPackageService {
                 .standSize(createSponsorshipPackageRequest.getStandSize())
                 .maxCompanies(createSponsorshipPackageRequest.getMaxCompanies())
                 .isAvailable(false)
-                .companies(Collections.emptyList())
+                .companies(Set.of())
                 .build();
 
         return getSponsorshipPackageResponse(sponsorshipPackageRepository.save(newSponsorshipPackage));
@@ -137,7 +134,7 @@ public class SponsorshipPackageService {
     }
 
     private SponsorshipPackageResponse getSponsorshipPackageResponse(SponsorshipPackage sponsorshipPackage) {
-
+        log.info("SP: " + sponsorshipPackage.getId() + " has " + sponsorshipPackage.getCompanies().size() + " companies");
         return SponsorshipPackageResponse.builder()
                 .id(sponsorshipPackage.getId())
                 .isAvailable(sponsorshipPackage.getIsAvailable())

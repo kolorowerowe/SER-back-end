@@ -1,6 +1,7 @@
 package com.github.ser.service;
 
 import com.github.ser.exception.badRequest.NoCompanyForUuidException;
+import com.github.ser.exception.badRequest.SPEquipmentUnavailableException;
 import com.github.ser.model.database.*;
 import com.github.ser.model.lists.CompanyDeadlineStatusesDTO;
 import com.github.ser.model.lists.CompanyListResponse;
@@ -147,6 +148,14 @@ public class CompanyService {
     public CompanyResponse setSponsorshipPackage(UUID companyId, UUID sponsorshipPackageId) {
         Company company = getCompanyById(companyId);
         SponsorshipPackage sponsorshipPackage = sponsorshipPackageService.getSponsorshipPackageById(sponsorshipPackageId);
+
+       if (sponsorshipPackage.getIsAvailable() == false){
+           throw new SPEquipmentUnavailableException("Sponsorship package " + sponsorshipPackage + " is unavailable");
+       }
+
+        if (sponsorshipPackage.getCompanies().size() >= sponsorshipPackage.getMaxCompanies()){
+            throw new SPEquipmentUnavailableException("Sponsorship package " + sponsorshipPackage + " is unavailable because all positions are used");
+        }
 
         company.setSponsorshipPackage(sponsorshipPackage);
 

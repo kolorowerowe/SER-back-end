@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Statistics {
+public class CompanyStatistics {
 
-    private UserStatistics userStatistics;
-    private CompanyStatistics companyStatistics;
-    private SponsorshipPackageStatistics sponsorshipPackageStatistics;
+    private Integer allCompaniesCount;
+
 }
+

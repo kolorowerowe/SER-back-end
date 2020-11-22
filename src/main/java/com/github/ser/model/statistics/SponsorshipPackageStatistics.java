@@ -1,7 +1,6 @@
 package com.github.ser.model.statistics;
 
 
-import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.response.SponsorshipPackageResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,10 +1,7 @@
 package com.github.ser.service;
 
 import com.github.ser.exception.auth.InvalidVerificationCodeException;
-import com.github.ser.exception.badRequest.InvalidOldPasswordException;
-import com.github.ser.exception.badRequest.InvalidRepeatPasswordException;
-import com.github.ser.exception.badRequest.NoUserForEmailException;
-import com.github.ser.exception.badRequest.NoUserForUuidException;
+import com.github.ser.exception.badRequest.*;
 import com.github.ser.model.database.CompanyAccess;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.UserListResponse;
@@ -74,7 +71,14 @@ public class UserService {
     }
 
     public void sentVerificationCode(String email) {
-        //TODO: verify if email is in database
+
+        // verify if user is in database
+        User user = getUserByEmail(email);
+
+        if (user.getIsActivated()){
+            throw new UserAlreadyActivatedException("User is already activated.");
+        }
+
         String code = verificationCodeService.generateCode(email);
 
         MailMessage verificationMessage = MailMessage.getVerificationMailMessage(email, code);

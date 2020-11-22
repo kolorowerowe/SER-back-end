@@ -84,6 +84,8 @@ public class PopulateDatabase {
                         .build()))
                 .standSize(12.0)
                 .isAvailable(true)
+                .maxCompanies(2)
+                .companies(Set.of())
                 .build();
 
         return sponsorshipPackageRepository.save(sponsorshipPackage1);

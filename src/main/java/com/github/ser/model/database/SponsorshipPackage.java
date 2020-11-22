@@ -24,7 +24,6 @@ public class SponsorshipPackage {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
-
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
@@ -42,7 +41,7 @@ public class SponsorshipPackage {
 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "sponsorshipPackage",  cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @ToString.Exclude
-    private List<Company> companies;
+    private Set<Company> companies;
 }

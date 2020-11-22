@@ -2,6 +2,7 @@ package com.github.ser.service;
 
 import com.github.ser.enums.Role;
 import com.github.ser.model.database.User;
+import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.lists.SponsorshipPackageListResponse;
 import com.github.ser.model.lists.UserListResponse;
 import com.github.ser.model.response.SponsorshipPackageResponse;
@@ -33,6 +34,7 @@ public class StatisticsService {
     public Statistics getStatistics() {
         return Statistics.builder()
                 .userStatistics(getUserStatistics())
+                .companyStatistics(getCompanyStatistics())
                 .sponsorshipPackageStatistics(getSponsorshipPackageStatistics())
                 .build();
     }
@@ -53,6 +55,14 @@ public class StatisticsService {
         return UserStatistics.builder()
                 .allUsersCount(userListResponse.getCount())
                 .roleOccurrenceList(roleOccurrenceList)
+                .build();
+    }
+
+    public CompanyStatistics getCompanyStatistics() {
+        CompanyListResponse companyListResponse = companyService.getAllCompanies();
+
+        return CompanyStatistics.builder()
+                .allCompaniesCount(companyListResponse.getCount())
                 .build();
     }
 
