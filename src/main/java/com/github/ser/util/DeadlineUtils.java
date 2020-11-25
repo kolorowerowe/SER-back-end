@@ -32,9 +32,8 @@ public class DeadlineUtils {
                 //TODO 11/09/2020: fill this
                return false;
 
-            case FILL_CATALOGUE_INFORMATION:
-                //TODO 11/09/2020: fill this
-                return false;
+            case FILL_CATALOG_INFORMATION:
+                return company.getCatalogInformation() != null;
 
             case SIGN_THE_CONTRACT:
                 //TODO 11/09/2020: fill this

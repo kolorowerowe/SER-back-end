@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.ser.model.database.Address;
+import com.github.ser.model.database.CatalogInformation;
 import com.github.ser.model.database.Company;
 import com.github.ser.model.database.User;
 import com.github.ser.model.dto.CompanyDeadlineStatusDTO;
@@ -42,6 +43,8 @@ public class CompanyResponse {
 
     private SponsorshipPackageResponse sponsorshipPackage;
 
+    private CatalogInformation catalogInformation;
+
     private List<CompanyDeadlineStatusDTO> companyDeadlineStatuses;
 
     public CompanyResponse(Company company, User primaryUser, SponsorshipPackageResponse sponsorshipPackageResponse, CompanyDeadlineStatusesDTO companyDeadlineStatuses){
@@ -53,6 +56,7 @@ public class CompanyResponse {
         this.companyCreatedDate = company.getCompanyCreatedDate();
         this.address = company.getAddress();
         this.sponsorshipPackage = sponsorshipPackageResponse;
+        this.catalogInformation = company.getCatalogInformation();
         this.companyDeadlineStatuses = companyDeadlineStatuses.getCompanyDeadlineStatuses();
     }
 

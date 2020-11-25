@@ -51,4 +51,8 @@ public class Company {
     @JoinColumn(name = "sponsorship_package_id", referencedColumnName = "id")
     private SponsorshipPackage sponsorshipPackage;
 
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CatalogInformation catalogInformation;
+
+
 }

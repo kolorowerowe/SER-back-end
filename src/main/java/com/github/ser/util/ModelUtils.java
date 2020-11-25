@@ -1,20 +1,22 @@
 package com.github.ser.util;
 
-import com.github.ser.model.database.Address;
-import com.github.ser.model.database.Company;
-import com.github.ser.model.database.Equipment;
-import com.github.ser.model.database.SponsorshipPackage;
+import com.github.ser.model.database.*;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.ChangeSponsorshipPackageRequest;
 import com.github.ser.model.requests.CreateEquipmentRequest;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.beanutils.BeanUtilsBean;
 
+import java.lang.reflect.InvocationTargetException;
+
+@Log4j2
 public class ModelUtils {
 
     private ModelUtils() {
         // private constructor
     }
 
-    public static Company copyCompanyNonNullProperties(Company company, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
+    public static Company copyCompanyNonNullProperties(Company company, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) throws InvocationTargetException, IllegalAccessException {
 
         String newContactPhone = changeCompanyDetailsRequest.getContactPhone();
         if (notEmpty(newContactPhone)) {
@@ -28,32 +30,48 @@ public class ModelUtils {
 
 
         Address companyAddress = company.getAddress();
+        if (changeCompanyDetailsRequest.getAddress() != null) {
+            String newStreet = changeCompanyDetailsRequest.getAddress().getStreet();
+            if (notEmpty(newStreet)) {
+                companyAddress.setStreet(newStreet);
+            }
 
-        String newStreet = changeCompanyDetailsRequest.getAddress().getStreet();
-        if (notEmpty(newStreet)) {
-            companyAddress.setStreet(newStreet);
+            String newBuildingNumber = changeCompanyDetailsRequest.getAddress().getBuildingNumber();
+            if (notEmpty(newBuildingNumber)) {
+                companyAddress.setBuildingNumber(newBuildingNumber);
+            }
+
+            String newFlatNumber = changeCompanyDetailsRequest.getAddress().getFlatNumber();
+            companyAddress.setFlatNumber(newFlatNumber);
+
+
+            String newCity = changeCompanyDetailsRequest.getAddress().getCity();
+            if (notEmpty(newCity)) {
+                companyAddress.setCity(newCity);
+            }
+
+            String newPostalCode = changeCompanyDetailsRequest.getAddress().getPostalCode();
+            if (notEmpty(newPostalCode)) {
+                companyAddress.setPostalCode(newPostalCode);
+            }
+
+            company.setAddress(companyAddress);
         }
 
-        String newBuildingNumber = changeCompanyDetailsRequest.getAddress().getBuildingNumber();
-        if (notEmpty(newBuildingNumber)) {
-            companyAddress.setBuildingNumber(newBuildingNumber);
+        if (changeCompanyDetailsRequest.getCatalogInformationRequest() != null) {
+            CatalogInformation catalogInformation = company.getCatalogInformation();
+            if (catalogInformation == null) {
+                catalogInformation = CatalogInformation.builder()
+                        .company(company)
+                        .build();
+            }
+
+            BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
+            notNull.copyProperties(catalogInformation, changeCompanyDetailsRequest.getCatalogInformationRequest());
+
+            company.setCatalogInformation(catalogInformation);
         }
 
-        String newFlatNumber = changeCompanyDetailsRequest.getAddress().getFlatNumber();
-        companyAddress.setFlatNumber(newFlatNumber);
-
-
-        String newCity = changeCompanyDetailsRequest.getAddress().getCity();
-        if (notEmpty(newCity)) {
-            companyAddress.setCity(newCity);
-        }
-
-        String newPostalCode = changeCompanyDetailsRequest.getAddress().getPostalCode();
-        if (notEmpty(newPostalCode)) {
-            companyAddress.setPostalCode(newPostalCode);
-        }
-
-        company.setAddress(companyAddress);
 
         return company;
     }
@@ -119,6 +137,7 @@ public class ModelUtils {
     private static boolean notEmpty(Boolean field) {
         return (field != null);
     }
+
     private static boolean notEmpty(Integer field) {
         return (field != null);
     }

@@ -7,6 +7,7 @@ import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.database.User;
 import com.github.ser.model.lists.CompanyListResponse;
 import com.github.ser.model.requests.AddressRequest;
+import com.github.ser.model.requests.CatalogInformationRequest;
 import com.github.ser.model.requests.ChangeCompanyDetailsRequest;
 import com.github.ser.model.requests.CreateCompanyRequest;
 import com.github.ser.model.response.CompanyResponse;
@@ -205,7 +206,9 @@ class CompanyServiceTest {
                 () -> assertEquals("Zeus", company.getName()),
                 () -> assertEquals(user.getId(), company.getPrimaryUser().getId()),
                 () -> assertEquals("Kraków", company.getAddress().getCity()),
-                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyId().equals(company.getId())))
+                () -> assertTrue(userWithCompanyAccess.getCompanyAccessList().stream().anyMatch(companyAccess -> companyAccess.getCompanyId().equals(company.getId()))),
+                () -> assertNull(company.getCatalogInformation()),
+                () -> assertNull(company.getSponsorshipPackage())
         );
 
     }
@@ -259,7 +262,33 @@ class CompanyServiceTest {
 
         assertAll(
                 () -> assertEquals("+5678", updatedCompany.getContactPhone()),
-                () -> assertEquals("8888", updatedCompany.getTaxId())
+                () -> assertEquals("8888", updatedCompany.getTaxId()),
+                () -> assertEquals("12", updatedCompany.getAddress().getBuildingNumber())
+        );
+
+    }
+
+    @Test
+    @DisplayName("Change company details - Catalog information")
+    void changeCompanyDetails_changeCatalogInformation() {
+
+        ChangeCompanyDetailsRequest changeCompanyDetailsRequest = ChangeCompanyDetailsRequest.builder()
+                .catalogInformationRequest(CatalogInformationRequest.builder()
+                        .companyName("my galileo company")
+                        .paidInternships(false)
+                        .numberOfEmployeesPoland(100)
+                        .build())
+                .build();
+
+        CompanyResponse updatedCompany = companyService.changeCompanyDetails(company1Id, changeCompanyDetailsRequest);
+
+        assertAll(
+                () -> assertEquals("Galileo", updatedCompany.getName()),
+                () -> assertEquals("+1234", updatedCompany.getContactPhone()),
+                () -> assertEquals("my galileo company", updatedCompany.getCatalogInformation().getCompanyName()),
+                () -> assertEquals(false, updatedCompany.getCatalogInformation().getPaidInternships()),
+                () -> assertEquals(100, updatedCompany.getCatalogInformation().getNumberOfEmployeesPoland()),
+                () -> assertNull(updatedCompany.getCatalogInformation().getCandidateRequirements())
         );
 
     }

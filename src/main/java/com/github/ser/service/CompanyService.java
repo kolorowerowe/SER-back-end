@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -139,7 +140,14 @@ public class CompanyService {
     public CompanyResponse changeCompanyDetails(UUID companyId, ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
         Company company = getCompanyById(companyId);
 
-        Company updatedCompany = ModelUtils.copyCompanyNonNullProperties(company, changeCompanyDetailsRequest);
+        Company updatedCompany = null;
+        try {
+            updatedCompany = ModelUtils.copyCompanyNonNullProperties(company, changeCompanyDetailsRequest);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         Company savedCompany = companyRepository.save(updatedCompany);
         return getCompanyResponse(savedCompany);

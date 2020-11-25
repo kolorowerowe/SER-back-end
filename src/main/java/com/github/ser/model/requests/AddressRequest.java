@@ -14,13 +14,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class AddressRequest {
 
-    @NotNull
     private String street;
-    @NotNull
     private String buildingNumber;
     private String flatNumber;
-    @NotNull
     private String city;
-    @NotNull
     private String postalCode;
 }

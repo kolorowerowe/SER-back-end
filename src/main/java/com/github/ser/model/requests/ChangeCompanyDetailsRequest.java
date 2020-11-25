@@ -14,4 +14,6 @@ public class ChangeCompanyDetailsRequest {
 
     private AddressRequest address;
 
+    private CatalogInformationRequest catalogInformationRequest;
+
 }
