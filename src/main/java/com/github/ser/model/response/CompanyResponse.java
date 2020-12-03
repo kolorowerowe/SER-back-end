@@ -13,6 +13,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,12 +35,13 @@ public class CompanyResponse {
 
     private String taxId;
 
+    private Address address;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime companyCreatedDate;
 
-    private Address address;
 
     private SponsorshipPackageResponse sponsorshipPackage;
 
@@ -58,6 +60,45 @@ public class CompanyResponse {
         this.sponsorshipPackage = sponsorshipPackageResponse;
         this.catalogInformation = company.getCatalogInformation();
         this.companyDeadlineStatuses = companyDeadlineStatuses.getCompanyDeadlineStatuses();
+    }
+
+    public static List<String> getHeaders(){
+        return Arrays.asList(
+                "ID",
+                "Primary User ID",
+                "Primary User Email",
+                "Primary User Full Name",
+                "Company Name",
+                "Contact phone",
+                "Tax ID",
+                "Street",
+                "Building number",
+                "Flat number",
+                "City",
+                "Postal code",
+                "Company created Date",
+                "Sponsorship package",
+                "Catalog information filled");
+    }
+
+    public List<String> getRow(){
+        return Arrays.asList(
+                this.id.toString(),
+                this.primaryUser.getId().toString(),
+                this.primaryUser.getEmail(),
+                this.primaryUser.getFullName(),
+                this.name,
+                this.contactPhone,
+                this.taxId,
+                this.address.getStreet(),
+                this.address.getBuildingNumber(),
+                this.address.getFlatNumber(),
+                this.address.getCity(),
+                this.address.getPostalCode(),
+                this.companyCreatedDate.toString(),
+                this.sponsorshipPackage != null ? this.sponsorshipPackage.getId().toString() : null,
+                this.catalogInformation != null ? "YES" : "NO"
+        );
     }
 
 }

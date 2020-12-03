@@ -11,6 +11,7 @@ import com.github.ser.model.response.CompanyResponse;
 import com.github.ser.model.response.SponsorshipPackageResponse;
 import com.github.ser.repository.CompanyAccessRepository;
 import com.github.ser.repository.CompanyRepository;
+import com.github.ser.util.CsvBuilder;
 import com.github.ser.util.ModelUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,18 @@ public class CompanyService {
                 .companyList(companyResponseList)
                 .count(companyResponseList.size())
                 .build();
+
+    }
+
+    public String exportCompaniesToCsv() {
+
+        CsvBuilder csvBuilder = new CsvBuilder(CompanyResponse.getHeaders());
+
+        CompanyListResponse companyListResponse = getAllCompanies();
+
+        companyListResponse.getCompanyList().forEach(companyResponse -> csvBuilder.addRow(companyResponse.getRow()));
+
+        return csvBuilder.toString();
 
     }
 

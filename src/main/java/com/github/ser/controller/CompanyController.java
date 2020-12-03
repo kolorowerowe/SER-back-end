@@ -7,9 +7,13 @@ import com.github.ser.model.response.CompanyResponse;
 import com.github.ser.service.CompanyService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RestController
@@ -27,6 +31,16 @@ public class CompanyController {
     public ResponseEntity<CompanyListResponse> getAllCompanies() {
         log.info("Getting all companies");
         return new ResponseEntity<>(companyService.getAllCompanies(), HttpStatus.OK);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<String> exportCompaniesToCsv() {
+        log.info("Exporting companies to csv");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.TEXT_PLAIN)
+                .header("x-suggested-filename", "companies_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
+                .body(companyService.exportCompaniesToCsv());
     }
 
     @GetMapping(params = "userId")

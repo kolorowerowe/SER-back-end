@@ -89,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod("PUT");
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
+        config.addExposedHeader("x-suggested-filename");
         source.registerCorsConfiguration("/**", config);
         return source;
     }
