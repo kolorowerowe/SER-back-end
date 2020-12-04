@@ -4,6 +4,7 @@ import com.github.ser.exception.SerAuthException;
 import com.github.ser.exception.SerBadRequestException;
 import com.github.ser.exception.SerRuntimeException;
 import com.github.ser.model.response.ErrorResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Log4j2
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -46,6 +48,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = SerRuntimeException.class)
     protected ResponseEntity<Object> handleConflict(SerRuntimeException ex, WebRequest request) {
+
+        log.error(ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorCode(ex.getErrorCode())

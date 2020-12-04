@@ -1,5 +1,6 @@
 package com.github.ser.util;
 
+import com.github.ser.exception.runtime.ConvertToCsvFailedException;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -27,11 +28,10 @@ public class CsvBuilder {
 
     public void addRow(List<String> items) {
         if (items.size() != headers.size()){
-            return;
+            throw new ConvertToCsvFailedException("Different size of columns. Headers have " + headers.size() + " columns, but new row has " + items.size() + " columns");
         }
 
         lines.add(items);
-
     }
 
 

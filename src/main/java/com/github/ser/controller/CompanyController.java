@@ -43,6 +43,16 @@ public class CompanyController {
                 .body(companyService.exportCompaniesToCsv());
     }
 
+    @GetMapping("/export/catalog")
+    public ResponseEntity<String> exportCatalogInformationToCsv() {
+        log.info("Exporting catalog information to csv");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.TEXT_PLAIN)
+                .header("x-suggested-filename", "catalog_information_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
+                .body(companyService.exportCatalogInformationToCsv());
+    }
+
     @GetMapping(params = "userId")
     public ResponseEntity<CompanyListResponse> getCompaniesForUser(@RequestParam UUID userId) {
         log.info("Getting companies for user: " + userId);

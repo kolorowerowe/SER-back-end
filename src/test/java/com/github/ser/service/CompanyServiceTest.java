@@ -314,4 +314,31 @@ class CompanyServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Export company to csv")
+    void exportCompanyToCsv() {
+
+        String companiesCsv = companyService.exportCompaniesToCsv();
+
+        assertAll(
+                () -> assertNotEquals(0, companiesCsv.length()),
+                () -> assertTrue(companiesCsv.contains("Company Name")),
+                () -> assertTrue(companiesCsv.contains("Galileo")),
+                () -> assertTrue(companiesCsv.contains("Copernicus"))
+        );
+
+    }
+
+    @Test
+    @DisplayName("Export catalog info to csv")
+    void exportCatalogInformationToCsv() {
+
+        String catalogCsv = companyService.exportCatalogInformationToCsv();
+
+        assertAll(
+                () -> assertNotEquals(0, catalogCsv.length()),
+                () -> assertTrue(catalogCsv.contains("Description"))
+        );
+
+    }
 }

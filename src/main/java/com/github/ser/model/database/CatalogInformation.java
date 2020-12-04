@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -48,4 +50,51 @@ public class CatalogInformation {
     @OneToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
+
+
+    public static List<String> getHeaders() {
+        return Arrays.asList(
+                "ID",
+                "Company ID",
+                "Company Name",
+                "Description",
+                "Email",
+                "Website",
+                "Business Profile",
+                "Number of employees Poland",
+                "Number of employees Worldwide",
+                "Candidate Requirements",
+                "Main office location",
+                "Subsidiary offices locations",
+                "Number of job vacancies",
+                "Paid internships",
+                "Unpaid internships",
+                "Recruitment Contact Name",
+                "Recruitment Contact Email",
+                "Recruitment Contact Phone"
+        );
+    }
+
+    public List<String> getRow() {
+        return Arrays.asList(
+                id.toString(),
+                company.getId().toString(),
+                companyName,
+                description,
+                email,
+                website,
+                businessProfile,
+                numberOfEmployeesPoland.toString(),
+                numberOfEmployeesWorldwide.toString(),
+                candidateRequirements,
+                mainOfficeLocation,
+                subsidiaryOfficesLocations,
+                numberOfJobVacancies.toString(),
+                paidInternships.toString(),
+                unpaidInternships.toString(),
+                recruitmentContactName,
+                recruitmentContactEmail,
+                recruitmentContactPhone
+        );
+    }
 }

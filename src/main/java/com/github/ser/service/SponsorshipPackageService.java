@@ -134,7 +134,7 @@ public class SponsorshipPackageService {
     }
 
     private SponsorshipPackageResponse getSponsorshipPackageResponse(SponsorshipPackage sponsorshipPackage) {
-        log.info("SP: " + sponsorshipPackage.getId() + " has " + sponsorshipPackage.getCompanies().size() + " companies");
+
         return SponsorshipPackageResponse.builder()
                 .id(sponsorshipPackage.getId())
                 .isAvailable(sponsorshipPackage.getIsAvailable())

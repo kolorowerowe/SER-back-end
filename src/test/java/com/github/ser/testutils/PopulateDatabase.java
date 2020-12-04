@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -100,6 +101,7 @@ public class PopulateDatabase {
                 .contactPhone("+1234")
                 .taxId("999")
                 .primaryUserId(user.getId())
+                .companyCreatedDate(LocalDateTime.now())
                 .build();
 
         company1.setAddress(Address.builder()
@@ -110,6 +112,7 @@ public class PopulateDatabase {
         Company company2 = Company.builder()
                 .name("Copernicus")
                 .primaryUserId(user.getId())
+                .companyCreatedDate(LocalDateTime.now())
                 .build();
 
         company2.setAddress(Address.builder()
@@ -127,13 +130,13 @@ public class PopulateDatabase {
 
         companyAccessRepository.save(CompanyAccess.builder()
                 .companyId(company1.getId())
-                .companyName("Company1")
+                .companyName("Galileo")
                 .user(user)
                 .build());
 
         companyAccessRepository.save(CompanyAccess.builder()
                 .companyId(company2.getId())
-                .companyName("Company2")
+                .companyName("Copernicus")
                 .user(user)
                 .build());
 

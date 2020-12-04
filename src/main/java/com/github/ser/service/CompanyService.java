@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,23 @@ public class CompanyService {
         CompanyListResponse companyListResponse = getAllCompanies();
 
         companyListResponse.getCompanyList().forEach(companyResponse -> csvBuilder.addRow(companyResponse.getRow()));
+
+        return csvBuilder.toString();
+
+    }
+
+    public String exportCatalogInformationToCsv() {
+
+        CsvBuilder csvBuilder = new CsvBuilder(CatalogInformation.getHeaders());
+
+        List<CatalogInformation> catalogInformationList = getAllCompanies()
+                .getCompanyList()
+                .stream()
+                .map(CompanyResponse::getCatalogInformation)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        catalogInformationList.forEach(catalogInformation -> csvBuilder.addRow(catalogInformation.getRow()));
 
         return csvBuilder.toString();
 

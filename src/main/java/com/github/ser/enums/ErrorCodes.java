@@ -5,6 +5,7 @@ public enum ErrorCodes {
     // 0 - general error
     UNEXPECTED(0),
     EMAIL_NOT_SENT(1),
+    CONVERT_TO_CSV_FAILED(2),
 
     // 1 - auth error
     TOKEN_EXPIRED(100),

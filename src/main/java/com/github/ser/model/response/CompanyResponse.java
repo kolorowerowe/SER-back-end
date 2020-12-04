@@ -49,7 +49,7 @@ public class CompanyResponse {
 
     private List<CompanyDeadlineStatusDTO> companyDeadlineStatuses;
 
-    public CompanyResponse(Company company, User primaryUser, SponsorshipPackageResponse sponsorshipPackageResponse, CompanyDeadlineStatusesDTO companyDeadlineStatuses){
+    public CompanyResponse(Company company, User primaryUser, SponsorshipPackageResponse sponsorshipPackageResponse, CompanyDeadlineStatusesDTO companyDeadlineStatuses) {
         this.id = company.getId();
         this.primaryUser = new UserMiniData(primaryUser);
         this.name = company.getName();
@@ -62,7 +62,7 @@ public class CompanyResponse {
         this.companyDeadlineStatuses = companyDeadlineStatuses.getCompanyDeadlineStatuses();
     }
 
-    public static List<String> getHeaders(){
+    public static List<String> getHeaders() {
         return Arrays.asList(
                 "ID",
                 "Primary User ID",
@@ -81,7 +81,7 @@ public class CompanyResponse {
                 "Catalog information filled");
     }
 
-    public List<String> getRow(){
+    public List<String> getRow() {
         return Arrays.asList(
                 this.id.toString(),
                 this.primaryUser.getId().toString(),
