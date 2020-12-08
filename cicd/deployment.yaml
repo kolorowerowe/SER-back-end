@@ -17,7 +17,32 @@ spec:
             - name: DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
-                  key: datasource-url
+                  key: DATASOURCE_URL
+                  name: ser-back-end-secret
+            - name: DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: DATASOURCE_USERNAME
+                  name: ser-back-end-secret
+            - name: DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DATASOURCE_PASSWORD
+                  name: ser-back-end-secret
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: ser-back-end-secret
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MAIL_USERNAME
+                  name: ser-back-end-secret
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MAIL_PASSWORD
                   name: ser-back-end-secret
           name: ser-back-end
           image: kolorowerowe/ser-back-end:1.0.0
