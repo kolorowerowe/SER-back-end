@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ser-back-end
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ser-back-end
+  template:
+    metadata:
+      labels:
+        app: ser-back-end
+    spec:
+      containers:
+        - env:
+            - name: DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: datasource-url
+                  name: ser-back-end-secret
+          name: ser-back-end
+          image: kolorowerowe/ser-back-end:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
