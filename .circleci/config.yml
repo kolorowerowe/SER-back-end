@@ -5,6 +5,7 @@ orbs:
 
 jobs:
   build:
+    working_directory: /cicd
     environment:
       IMAGE_NAME: kolorowerowe/ser-back-end
     docker:
