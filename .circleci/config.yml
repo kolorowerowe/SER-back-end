@@ -3,9 +3,43 @@ version: 2.1
 orbs:
   maven: circleci/maven@1.0.3
 
-
-
+jobs:
+  build:
+    environment:
+      IMAGE_NAME: kolorowerowe/ser-back-end
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t $IMAGE_NAME:latest -f ../cicd/Dockerfile .
+  publish-latest:
+    environment:
+      IMAGE_NAME: building-on-ci
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "kolorowerowe" --password-stdin
+            docker push $IMAGE_NAME:latest
 workflows:
-  maven_test:
+  version: 2
+  build-master:
     jobs:
-      - maven/test # checkout, build, test, and upload test results
+      - maven/test
+      - build:
+          filters:
+            branches:
+              only: master
+      - publish-latest:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
