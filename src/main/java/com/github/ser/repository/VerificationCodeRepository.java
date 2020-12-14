@@ -11,5 +11,4 @@ import java.util.UUID;
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, UUID> {
 
     List<VerificationCode> findVerificationCodesByUserEmail(String email);
-
 }
