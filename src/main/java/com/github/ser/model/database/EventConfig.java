@@ -21,4 +21,8 @@ public class EventConfig {
 
     private String eventDate;
 
+    private String eventNamePl;
+
+    private String eventNameEn;
+
 }
