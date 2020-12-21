@@ -45,6 +45,12 @@ public class EventConfigService {
         if (eventConfig.getEventDate() == null){
             throw new EventConfigInvalidException("Event date is null");
         }
+        if (eventConfig.getEventNamePl() == null){
+            throw new EventConfigInvalidException("Event name pl is null");
+        }
+        if (eventConfig.getEventNameEn() == null){
+            throw new EventConfigInvalidException("Event name en is null");
+        }
 
         eventConfigRepository.deleteAll();
         return eventConfigRepository.save(eventConfig);

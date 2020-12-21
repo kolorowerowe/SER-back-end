@@ -32,21 +32,28 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
+        log.info("Getting user by id: " + userId);
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+    }
+
     @GetMapping(params = {"email"})
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
         log.info("Getting user by email: " + email);
         return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
     }
 
-    @GetMapping("/check-token")
-    public ResponseEntity<Void> checkToken() {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PostMapping
+    public ResponseEntity<User> registerNewUser(@RequestBody RegisterUserRequest registerUserRequest) {
+        log.info("Register new user: " + registerUserRequest.getFullName());
+        return new ResponseEntity<>(userService.registerNewUser(registerUserRequest), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
-        log.info("Getting user by id: " + userId);
-        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
+    @PatchMapping("/{userId}")
+    public ResponseEntity<User> changeUserPersonalInfo(@PathVariable UUID userId, @RequestBody ChangeUserPersonalInfoRequest changeUserPersonalInfoRequest){
+        log.info("Changing personal info for user: " + userId);
+        return new ResponseEntity<>(userService.changeUserPersonalInfo(userId, changeUserPersonalInfoRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
@@ -56,20 +63,27 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping()
-    public ResponseEntity<User> registerNewUser(@RequestBody RegisterUserRequest registerUserRequest) {
-        log.info("Register new user: " + registerUserRequest.getFullName());
-        return new ResponseEntity<>(userService.registerNewUser(registerUserRequest), HttpStatus.OK);
+    @PostMapping("/{userId}/password")
+    public ResponseEntity<User> changeUserPassword(@PathVariable UUID userId, @RequestBody ChangeUserPasswordRequest changeUserPasswordRequest){
+        log.info("Changing password for user: " + userId);
+        return new ResponseEntity<>(userService.changeUserPassword(userId, changeUserPasswordRequest), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/verify/request", params = {"email"})
+    @GetMapping("/check-token")
+    public ResponseEntity<Void> checkToken() {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+    @PostMapping(value = "/verify/request", params = {"email"})
     public ResponseEntity<Void> sentVerificationCode(@RequestParam String email) {
         log.info("Started process of verification for user: " + email);
         userService.sentVerificationCode(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value = "/verify/check", params = {"email", "code"})
+    @PostMapping(value = "/verify/check", params = {"email", "code"})
     public ResponseEntity<LoginUserResponse> verifyCode(@RequestParam String email, @RequestParam String code) {
         log.info("Verifying user by email: " + email + " and code: " + code);
         LoginUserResponse loginUserResponse = userService.verifyCode(email, code);
@@ -80,19 +94,6 @@ public class UserController {
     public ResponseEntity<User> setUserPassword(@PathVariable UUID userId, @RequestBody SetUserPasswordRequest setUserPasswordRequest){
         log.info("Setting password for user: " + userId);
         return new ResponseEntity<>(userService.setUserPassword(userId, setUserPasswordRequest), HttpStatus.OK);
-    }
-
-    @PatchMapping("/{userId}")
-    public ResponseEntity<User> changeUserPersonalInfo(@PathVariable UUID userId, @RequestBody ChangeUserPersonalInfoRequest changeUserPersonalInfoRequest){
-        log.info("Changing personal info for user: " + userId);
-        return new ResponseEntity<>(userService.changeUserPersonalInfo(userId, changeUserPersonalInfoRequest), HttpStatus.OK);
-
-    }
-
-    @PostMapping("/{userId}/password")
-    public ResponseEntity<User> changeUserPassword(@PathVariable UUID userId, @RequestBody ChangeUserPasswordRequest changeUserPasswordRequest){
-        log.info("Changing password for user: " + userId);
-        return new ResponseEntity<>(userService.changeUserPassword(userId, changeUserPasswordRequest), HttpStatus.OK);
     }
 
 }

@@ -55,7 +55,6 @@ public class SponsorshipPackageController {
     public ResponseEntity<SponsorshipPackageResponse> changeSponsorshipPackageDetails(@PathVariable UUID sponsorshipPackageId, @RequestBody ChangeSponsorshipPackageRequest changeSponsorshipPackageRequest) {
         log.info("Changing sponsorship package details: " + sponsorshipPackageId);
         return new ResponseEntity<>(sponsorshipPackageService.changeSponsorshipPackageDetails(sponsorshipPackageId, changeSponsorshipPackageRequest), HttpStatus.OK);
-
     }
 
     @PostMapping("/{sponsorshipPackageId}/equipment")

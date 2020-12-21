@@ -33,36 +33,16 @@ public class CompanyController {
         return new ResponseEntity<>(companyService.getAllCompanies(), HttpStatus.OK);
     }
 
-    @GetMapping("/export")
-    public ResponseEntity<String> exportCompaniesToCsv() {
-        log.info("Exporting companies to csv");
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.TEXT_PLAIN)
-                .header("x-suggested-filename", "companies_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
-                .body(companyService.exportCompaniesToCsv());
-    }
-
-    @GetMapping("/export/catalog")
-    public ResponseEntity<String> exportCatalogInformationToCsv() {
-        log.info("Exporting catalog information to csv");
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.TEXT_PLAIN)
-                .header("x-suggested-filename", "catalog_information_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
-                .body(companyService.exportCatalogInformationToCsv());
+    @GetMapping("/{companyId}")
+    public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable UUID companyId) {
+        log.info("Getting company by id: " + companyId);
+        return new ResponseEntity<>(companyService.getCompanyResponseById(companyId), HttpStatus.OK);
     }
 
     @GetMapping(params = "userId")
     public ResponseEntity<CompanyListResponse> getCompaniesForUser(@RequestParam UUID userId) {
         log.info("Getting companies for user: " + userId);
         return new ResponseEntity<>(companyService.getCompaniesForUser(userId), HttpStatus.OK);
-    }
-
-    @GetMapping("/{companyId}")
-    public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable UUID companyId) {
-        log.info("Getting company by id: " + companyId);
-        return new ResponseEntity<>(companyService.getCompanyResponseById(companyId), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -92,5 +72,24 @@ public class CompanyController {
 
     }
 
+    @GetMapping("/export")
+    public ResponseEntity<String> exportCompaniesToCsv() {
+        log.info("Exporting companies to csv");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.TEXT_PLAIN)
+                .header("x-suggested-filename", "companies_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
+                .body(companyService.exportCompaniesToCsv());
+    }
+
+    @GetMapping("/export/catalog")
+    public ResponseEntity<String> exportCatalogInformationToCsv() {
+        log.info("Exporting catalog information to csv");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.TEXT_PLAIN)
+                .header("x-suggested-filename", "catalog_information_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv")
+                .body(companyService.exportCatalogInformationToCsv());
+    }
 
 }

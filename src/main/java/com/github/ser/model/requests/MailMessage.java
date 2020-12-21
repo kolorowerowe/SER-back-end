@@ -15,11 +15,14 @@ public class MailMessage {
     @Builder.Default
     private Boolean isHtml = false;
 
-    public static MailMessage getVerificationMailMessage(String to, String code){
+    public static MailMessage getVerificationMailMessage(String to, String code) {
         return MailMessage.builder()
                 .to(to)
                 .subject("Verification")
-                .body("Hello, here is your verification code: " + code)
+                .body("<h3>Hello,</h3>" +
+                        "<p>here is your verification code: </p>"
+                        + "<h1>" + code + "</h1>")
+                .isHtml(true)
                 .build();
     }
 }

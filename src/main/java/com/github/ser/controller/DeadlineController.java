@@ -18,13 +18,13 @@ public class DeadlineController {
         this.deadlineService = deadlineService;
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<DeadlineListResponse> getAllDeadlines() {
         log.info("Getting all deadlines");
         return new ResponseEntity<>(deadlineService.getAllDeadlines(), HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<DeadlineListResponse> setAllDeadlines(@RequestBody DeadlineListResponse deadlineListResponse) {
         log.info("Setting all deadlines");
         return new ResponseEntity<>(deadlineService.setAllDeadlines(deadlineListResponse), HttpStatus.OK);
