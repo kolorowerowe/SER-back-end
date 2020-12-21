@@ -28,9 +28,6 @@ public class DeadlineService {
 
     public DeadlineListResponse getAllDeadlines() {
         List<Deadline> allDeadlines = deadlineRepository.findAll();
-//        if (allDeadlines.size() != 5) {
-//            throw new DeadlinesNotInitializedException("Deadline list size: " + allDeadlines.size() + ", assuming than deadlines are not initialized");
-//        }
 
         allDeadlines.sort(Comparator.comparing(Deadline::getOrderNumber));
 

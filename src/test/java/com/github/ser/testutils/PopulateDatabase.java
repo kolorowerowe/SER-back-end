@@ -1,5 +1,6 @@
 package com.github.ser.testutils;
 
+import com.github.ser.enums.DeadlineActivity;
 import com.github.ser.enums.Role;
 import com.github.ser.model.database.*;
 import com.github.ser.repository.*;
@@ -43,7 +44,6 @@ public class PopulateDatabase {
                 .build();
 
 
-
         User savedUser1 = userRepository.save(user1);
         User savedUser2 = userRepository.save(user2);
         User savedUser3 = userRepository.save(user3);
@@ -65,13 +65,40 @@ public class PopulateDatabase {
 
     public static void populateDeadlineRepository(DeadlineRepository deadlineRepository) {
         deadlineRepository.deleteAll();
-//
-//        deadlineRepository.save(Deadline.builder()
-//                .activity(DeadlineActivity.CHOOSE_ADDITIONAL_EQUIPMENT)
-//                .build())
+
+        deadlineRepository.save(Deadline.builder()
+                .activity(DeadlineActivity.FILL_COMPANY_DATA)
+                .deadlineDate("2020-12-01T10:00:00.000Z")
+                .orderNumber(1)
+                .build());
+
+        deadlineRepository.save(Deadline.builder()
+                .activity(DeadlineActivity.CHOOSE_SPONSORSHIP_PACKAGE)
+                .deadlineDate("2020-12-02T10:00:00.000Z")
+                .orderNumber(2)
+                .build());
+
+        deadlineRepository.save(Deadline.builder()
+                .activity(DeadlineActivity.CHOOSE_ADDITIONAL_EQUIPMENT)
+                .deadlineDate("2020-12-03T10:00:00.000Z")
+                .orderNumber(3)
+                .build());
+
+        deadlineRepository.save(Deadline.builder()
+                .activity(DeadlineActivity.FILL_CATALOG_INFORMATION)
+                .deadlineDate("2020-12-04T10:00:00.000Z")
+                .orderNumber(4)
+                .build());
+
+        deadlineRepository.save(Deadline.builder()
+                .activity(DeadlineActivity.SIGN_THE_CONTRACT)
+                .deadlineDate("2020-12-05T10:00:00.000Z")
+                .orderNumber(5)
+                .build());
+
     }
 
-    public static SponsorshipPackage populateSponsorshipPackageRepository(SponsorshipPackageRepository sponsorshipPackageRepository){
+    public static SponsorshipPackage populateSponsorshipPackageRepository(SponsorshipPackageRepository sponsorshipPackageRepository) {
 
         SponsorshipPackage sponsorshipPackage1 = SponsorshipPackage.builder()
                 .translations(Collections.singleton(Translation.builder()
@@ -119,7 +146,6 @@ public class PopulateDatabase {
                 .buildingNumber("1")
                 .company(company2)
                 .build());
-
 
 
         company1.setSponsorshipPackage(sponsorshipPackage);

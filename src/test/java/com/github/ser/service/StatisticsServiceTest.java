@@ -5,6 +5,7 @@ import com.github.ser.model.database.SponsorshipPackage;
 import com.github.ser.model.database.User;
 import com.github.ser.model.statistics.CompanyStatistics;
 import com.github.ser.model.statistics.SponsorshipPackageStatistics;
+import com.github.ser.model.statistics.Statistics;
 import com.github.ser.model.statistics.UserStatistics;
 import com.github.ser.repository.*;
 import com.github.ser.testutils.PopulateDatabase;
@@ -102,6 +103,21 @@ class StatisticsServiceTest {
         equipmentRepository.deleteAll();
     }
 
+
+    @Test
+    @DisplayName("Get all statistics - success")
+    void getAllStatistics_success() {
+
+        Statistics statistics = statisticsService.getStatistics();
+
+        assertAll(
+                () -> assertNotNull(statistics),
+                () -> assertNotNull(statistics.getCompanyStatistics()),
+                () -> assertNotNull(statistics.getSponsorshipPackageStatistics()),
+                () -> assertNotNull(statistics.getUserStatistics())
+        );
+
+    }
 
     @Test
     @DisplayName("Get user statistics - success")
