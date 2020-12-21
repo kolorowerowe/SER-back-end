@@ -45,7 +45,7 @@ spec:
                   key: MAIL_PASSWORD
                   name: ser-back-end-secret
           name: ser-back-end
-          image: kolorowerowe/ser-back-end:1.0.3
+          image: kolorowerowe/ser-back-end:1.0.4
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
