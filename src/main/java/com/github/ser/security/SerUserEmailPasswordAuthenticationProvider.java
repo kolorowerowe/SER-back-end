@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Component
 @Log4j2
@@ -34,15 +35,17 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         log.info("User: " + auth.getPrincipal() + " attempting login");
 
+        if (auth.getPrincipal() == null) {
+            log.debug("User: " + auth.getPrincipal() + " username is null");
+            throw new UsernameMissingException("Username is null");
+        }
+
         if (auth.getCredentials() == null) {
             log.debug("User: " + auth.getPrincipal() + " password is null");
             throw new PasswordMissingException("Password is null");
         }
 
-        if (auth.getPrincipal() == null) {
-            log.debug("User: " + auth.getPrincipal() + " username is null");
-            throw new UsernameMissingException("Username is null");
-        }
+
         String email = auth.getPrincipal().toString();
         String password = auth.getCredentials().toString();
 
@@ -68,7 +71,7 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
                 log.info("User: " + auth.getPrincipal() + " logged in successfully");
                 userService.setLastSeenNow(user);
 
-                return new UsernamePasswordAuthenticationToken(user.getEmail(), null, Collections.singletonList(user.getRole()));
+                return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(user.getRole()));
             } else {
                 log.info("User: " + auth.getPrincipal() + " invalid password");
                 throw new BadCredentialsException("Credentials are invalid");
@@ -77,8 +80,6 @@ public class SerUserEmailPasswordAuthenticationProvider implements Authenticatio
         } catch (NoUserForEmailException exception){
             throw new BadCredentialsException("Credentials are invalid");
         }
-
-
 
     }
 

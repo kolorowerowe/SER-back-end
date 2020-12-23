@@ -9,9 +9,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -28,12 +28,14 @@ public class CompanyController {
     }
 
     @GetMapping
+    @PreAuthorize("@accessVerificationBean.isAdminOrOrganizer()")
     public ResponseEntity<CompanyListResponse> getAllCompanies() {
         log.info("Getting all companies");
         return new ResponseEntity<>(companyService.getAllCompanies(), HttpStatus.OK);
     }
 
     @GetMapping("/{companyId}")
+    @PreAuthorize("@accessVerificationBean.hasAccessToCompany(#companyId)")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable UUID companyId) {
         log.info("Getting company by id: " + companyId);
         return new ResponseEntity<>(companyService.getCompanyResponseById(companyId), HttpStatus.OK);
@@ -52,6 +54,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{companyId}")
+    @PreAuthorize("@accessVerificationBean.hasAccessToCompany(#companyId)")
     public ResponseEntity<Void> deleteCompanyById(@PathVariable UUID companyId) {
         log.info("Deleting company by id: " + companyId);
         companyService.deleteCompanyById(companyId);
@@ -59,20 +62,23 @@ public class CompanyController {
     }
 
     @PatchMapping("/{companyId}")
-    public ResponseEntity<CompanyResponse> changeCompanyDetails(@PathVariable UUID companyId, @RequestBody ChangeCompanyDetailsRequest changeCompanyDetailsRequest){
+    @PreAuthorize("@accessVerificationBean.hasAccessToCompany(#companyId)")
+    public ResponseEntity<CompanyResponse> changeCompanyDetails(@PathVariable UUID companyId, @RequestBody ChangeCompanyDetailsRequest changeCompanyDetailsRequest) {
         log.info("Changing company details: " + companyId);
         return new ResponseEntity<>(companyService.changeCompanyDetails(companyId, changeCompanyDetailsRequest), HttpStatus.OK);
 
     }
 
     @PatchMapping("/{companyId}/sponsorship-package/{sponsorshipPackageId}")
-    public ResponseEntity<CompanyResponse> setSponsorshipPackage(@PathVariable UUID companyId, @PathVariable UUID sponsorshipPackageId){
+    @PreAuthorize("@accessVerificationBean.hasAccessToCompany(#companyId)")
+    public ResponseEntity<CompanyResponse> setSponsorshipPackage(@PathVariable UUID companyId, @PathVariable UUID sponsorshipPackageId) {
         log.info("Setting sponsorship package: " + sponsorshipPackageId + " for company: " + companyId);
         return new ResponseEntity<>(companyService.setSponsorshipPackage(companyId, sponsorshipPackageId), HttpStatus.OK);
 
     }
 
     @GetMapping("/export")
+    @PreAuthorize("@accessVerificationBean.isAdminOrOrganizer()")
     public ResponseEntity<String> exportCompaniesToCsv() {
         log.info("Exporting companies to csv");
 
@@ -83,6 +89,7 @@ public class CompanyController {
     }
 
     @GetMapping("/export/catalog")
+    @PreAuthorize("@accessVerificationBean.isAdminOrOrganizer()")
     public ResponseEntity<String> exportCatalogInformationToCsv() {
         log.info("Exporting catalog information to csv");
 

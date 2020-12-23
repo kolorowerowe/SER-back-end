@@ -57,7 +57,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 String email = jwtTokenUtil.getEmailFromToken(token);
                 User user = userService.getUserByEmail(email);
                 if (email != null) {
-                    return new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(user.getRole()));
+                    return new UsernamePasswordAuthenticationToken(user, null, Collections.singleton(user.getRole()));
                 }
 
             } catch (ExpiredJwtException ex) {

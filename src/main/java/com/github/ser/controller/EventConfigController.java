@@ -7,6 +7,7 @@ import com.github.ser.service.EventConfigService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,7 @@ public class EventConfigController {
     }
 
     @PostMapping
+    @PreAuthorize("@accessVerificationBean.isAdminOrOrganizer()")
     public ResponseEntity<EventConfig> updateEventConfig(@RequestBody EventConfig eventConfig) {
         log.info("Saving event config");
         return new ResponseEntity<>(eventConfigService.updateEventConfig(eventConfig), HttpStatus.OK);

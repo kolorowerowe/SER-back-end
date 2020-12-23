@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 @Log4j2
@@ -38,6 +39,7 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("rol", user.getRole().getAuthority())
+                .claim("companies", user.getCompanyAccessList().stream().map(companyAccess -> companyAccess.getCompanyId().toString()).collect(Collectors.joining(",")))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenConfig.getExpirationTime()))
                 .signWith(SignatureAlgorithm.HS512, jwtTokenConfig.getSecret()).compact();

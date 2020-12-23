@@ -59,8 +59,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult) throws IOException {
 
 
-        String email = (String) authResult.getPrincipal();
-        User user = userService.getUserByEmail(email);
+        User user = (User) authResult.getPrincipal();
+//        User user = userService.getUserByEmail(email);
 
         String authToken = jwtTokenUtil.generateTokenForUser(user);
 
