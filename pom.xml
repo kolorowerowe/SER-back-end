@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github</groupId>
     <artifactId>ser-back-end</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <name>ser-back-end</name>
     <description>System for Sponsors and Exhibitors Registration for the Job Fair.</description>
 
